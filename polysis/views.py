@@ -15,44 +15,45 @@ import os
 import re
 import datetime
 
+app_name='polysis'
 
 def leaderboard(request):
-    return render(request, 'base/leaderboard.html')
+    return render(request, app_name+'/leaderboard.html')
 
 def instructions(request):
-    return render(request, 'base/instruction.html')
+    return render(request, app_name+'/instruction.html')
 
-@login_required(login_url='/sign_in')
+@login_required(login_url='sign_in/')
 def index(request):
     current_member = Member.objects.get(user=request.user)
     if current_member.submitted:
-        return redirect('/leaderboard')
+        return redirect('/'+app_name+'/leaderboard/')
     else:
-        return render(request, 'base/index.html')
+        return render(request, app_name+'/index.html')
 
 def sign_in(request):
     if request.user.is_anonymous:
-        return render(request, 'base/sign_in.html')
+        return render(request, app_name+'/sign_in.html')
     else:
-        return redirect('/')
+        return redirect(app_name+'/')
 
 #This view will create a member object assosciated with the user object on log in but only if it does not exist.
 def create_member(request):
     user = request.user
     name = user.first_name + " " + user.last_name
     if Member.objects.filter(user=user).exists():
-        return redirect("/instructions") #Redirect to wherever you want the user to go to after logging in.
+        return redirect('/'+app_name+"/instructions/") #Redirect to wherever you want the user to go to after logging in.
     else:
         name = user.first_name + " " + user.last_name
         new_member = Member(user = user, name=name)
         new_member.save()
-        return redirect("/instructions") #Redirect to wherever you want the user to go to after logging in.
+        return redirect('/'+app_name+"/instructions/") #Redirect to wherever you want the user to go to after logging in.
 
-@login_required(login_url='/sign_in')
+@login_required(login_url='sign_in')
 def sign_out(request):
     submit(request)
     logout(request)
-    return redirect('/sign_in')
+    return redirect('/'+app_name+'/sign_in')
         
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -254,7 +255,7 @@ def get_leaderboard(request):
     else:
         return HttpResponse("IDK what to put here")
 
-@login_required(login_url='/sign_in')
+@login_required(login_url='sign_in/')
 def submit(request):
     current_member = Member.objects.get(user=request.user)
     
@@ -280,15 +281,15 @@ def submit(request):
                         current_member.score = current_member.score - question.score_decrement
                         current_member.answered_incorrectly.add(response.question)
                 current_member.save()
-            return redirect('/submitquiz')
+            return redirect('/'+app_name+'/submitquiz/')
         except:
-            return redirect('/leaderboard')
+            return redirect('/'+app_name+'/leaderboard/')
     else:
-        return redirect('/leaderboard')
+        return redirect('/'+app_name+'/leaderboard/')
 
 
 
-@login_required(login_url='/sign_in')
+@login_required(login_url='sign_in/')
 def get_result(request):
     current_member = Member.objects.get(user=request.user)
     if current_member.submitted:
@@ -320,7 +321,7 @@ def get_result(request):
 
 
 
-@login_required(login_url='/sign_in')
+@login_required(login_url='sign_in/')
 def get_score(request):
     current_member = Member.objects.get(user=request.user)
     if current_member.submitted:
@@ -331,8 +332,10 @@ def get_score(request):
 
 #@login_required(login_url='/sign_in')
 def get_question(request, queskey):
+    print('asdo')
     current_member = Member.objects.get(user=request.user)
     current_question = Question.objects.get(questionkey=queskey)
+    print('hello ')
     marked_key = 69
     entered_answer = "NULL1234"
     try:
@@ -381,6 +384,7 @@ def get_question(request, queskey):
 @csrf_exempt        
 def get_time_remaining(request):
     current_member = Member.objects.get(user=request.user)
+    print(request.method)
     if request.method == "POST":
         
         if current_member.has_started:
@@ -388,6 +392,7 @@ def get_time_remaining(request):
             return HttpResponse(status=204)
         
         else:
+            print("JOJOJOJOJO")
             current_member.start_time = timezone.now()
             current_member.has_started = True
             current_member.save()
@@ -435,13 +440,13 @@ def add_question(request):
             answer = question.answers.get(key=true_key)
             answer.is_correct = True
             answer.save()
-            return redirect("/add_question")
+            return redirect('/'+app_name+"/add_question")
         else:
             return HttpResponse("Please check the data you have entered")
     else:
         form = AddQuestion()
         set_key = len(Question.objects.all())
-        return render(request, 'base/add_question.html', {"form":form, "newkey":set_key})
+        return render(request, app_name+'/add_question.html', {"form":form, "newkey":set_key})
 
             
     ##LET THIS BE A REMINDER TO THOSE WHO FORGET THAT LOOPS EXIST - 

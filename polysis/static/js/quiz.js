@@ -6,7 +6,7 @@ var questionNo= 0;
 function getTime(){
     var data = $.ajax( {
         type: 'GET',
-        url: `/get_time_remaining`,
+        url: `/polysis/get_time_remaining`,
         data: {
         },
         success: function(data){   
@@ -18,7 +18,7 @@ function getTime(){
                setTimer(minutes,seconds);
            }
            else {
-            window.open("/submitquiz", "_self");
+            window.open("/polysis/submitquiz/", "_self");
            }
         }
     });    
@@ -30,7 +30,7 @@ var is_mcq;
 function getQuestionStatus(){
     var data = $.ajax( {
         type: 'GET',
-        url: `/gqs`,
+        url: `/polysis/gqs`,
         data: {
         },
         
@@ -92,7 +92,7 @@ function setTimer(maxtime_min, secondsLeft){
     
     function timeout() {
         clearInterval(timer_interval);
-        window.open("/submitquiz", "_self");
+        window.open("/polysis/submitquiz/", "_self");
         console.log("Still running");
      }
 }
@@ -130,7 +130,7 @@ function navQues(quesNo)
 function getQuestion(quesNo){   
     var data = $.ajax( {
         type: 'GET',
-        url: `/get_question/${quesNo}`,
+        url: `/polysis/get_question/${quesNo}`,
         data: {
         },
         success: function(data) {
@@ -206,7 +206,7 @@ function sendAnswer(quesNo,key){
     if(is_mcq){
         var data = $.ajax( {
             type: 'POST',
-            url: `/store_response`,
+            url: `/polysis/store_response`,
             data: {
                 "queskey" : quesNo,
                 "anskey" : key
@@ -218,7 +218,7 @@ function sendAnswer(quesNo,key){
     else{
         var data = $.ajax( {
             type: 'POST',
-            url: `/store_response`,
+            url: `/polysis/store_response`,
             data: {
                 "queskey" : quesNo,
                 "answer" : key
@@ -300,7 +300,7 @@ function markForReview(questionNo){
 function sendAnswer_Review(quesNo, key){
     var data = $.ajax( {
         type: 'POST',
-        url: '/atar',
+        url: '/polysis/atar',
         data: {
             "queskey" : quesNo,
             "anskey" : key
@@ -313,7 +313,7 @@ function sendAnswer_Review(quesNo, key){
 function sendReview(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/atr',
+        url: '/polysis/atr',
         data: {
             "queskey" : quesNo
         },
@@ -324,7 +324,7 @@ function sendReview(quesNo){
 function sendAttempted(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/ata',
+        url: '/polysis/ata',
         data: {
             "queskey" : quesNo
         },
@@ -335,7 +335,7 @@ function sendAttempted(quesNo){
 function sendUnattempted(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/atna',
+        url: '/polysis/atna',
         data: {
             "queskey" : quesNo
         },
@@ -508,7 +508,7 @@ function clear_response(){
 function sendClearResponse(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/delete_response',
+        url: '/polysis/delete_response',
         data: {
             "queskey" : quesNo
         },
@@ -522,7 +522,7 @@ function attempted_unattempted(){
     var noUnattempt = document.getElementById("unattempted");
     var data = $.ajax( {
         type: 'GET',
-        url: `/gqs`,
+        url: `/polysis/gqs`,
         data: {
         },
         
@@ -539,5 +539,5 @@ attempted_unattempted();
 function submitQuiz(){
     var submitConfirmation = confirm("Do you really want to submit!");
     if(submitConfirmation == true)
-    window.open("/submitquiz", "_self");
+    window.open("/polysis/submitquiz", "_self");
 }
