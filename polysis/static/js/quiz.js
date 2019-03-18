@@ -206,24 +206,24 @@ function sendAnswer(quesNo,key){
     if(is_mcq){
         var data = $.ajax( {
             type: 'POST',
-            url: `/polysis/store_response`,
+            url: `/polysis/store_response/`,
             data: {
                 "queskey" : quesNo,
                 "anskey" : key
             },
-            success: function(data) {             
+            success: function(data) {   
             }
         });
     }
     else{
         var data = $.ajax( {
             type: 'POST',
-            url: `/polysis/store_response`,
+            url: `/polysis/store_response/`,
             data: {
                 "queskey" : quesNo,
                 "answer" : key
             },
-            success: function(data) {             
+            success: function(data) {    
             }
         });
     }
@@ -300,7 +300,7 @@ function markForReview(questionNo){
 function sendAnswer_Review(quesNo, key){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/atar',
+        url: '/polysis/atar/',
         data: {
             "queskey" : quesNo,
             "anskey" : key
@@ -313,7 +313,7 @@ function sendAnswer_Review(quesNo, key){
 function sendReview(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/atr',
+        url: '/polysis/atr/',
         data: {
             "queskey" : quesNo
         },
@@ -324,7 +324,7 @@ function sendReview(quesNo){
 function sendAttempted(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/ata',
+        url: '/polysis/ata/',
         data: {
             "queskey" : quesNo
         },
@@ -335,7 +335,7 @@ function sendAttempted(quesNo){
 function sendUnattempted(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/atna',
+        url: '/polysis/atna/',
         data: {
             "queskey" : quesNo
         },
@@ -508,7 +508,7 @@ function clear_response(){
 function sendClearResponse(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/delete_response',
+        url: '/polysis/delete_response/',
         data: {
             "queskey" : quesNo
         },

@@ -35,7 +35,7 @@ def sign_in(request):
     if request.user.is_anonymous:
         return render(request, app_name+'/sign_in.html')
     else:
-        return redirect(app_name+'/')
+        return redirect('/'+app_name+'/')
 
 #This view will create a member object assosciated with the user object on log in but only if it does not exist.
 def create_member(request):
@@ -399,7 +399,6 @@ def get_time_remaining(request):
             return HttpResponse(status=204)
 
     else:
-        
         start_time = current_member.start_time
         quiz_time = datetime.timedelta(minutes = 30)
         end_time = start_time + quiz_time
@@ -519,31 +518,3 @@ def add_question(request):
     #                 ans_list = []
     #                 ans_list.append("2")
     #                 answer = response.answer_text
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
