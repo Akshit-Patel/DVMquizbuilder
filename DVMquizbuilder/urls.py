@@ -24,3 +24,8 @@ urlpatterns = [
     path('polysis/', include('polysis.urls')),
     url(r'^accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+urlpatterns += staticfiles_urlpatterns()
+
+urlpatterns += static(settings.STATIC_URL, serve, document_root=settings.STATIC_ROOT)
