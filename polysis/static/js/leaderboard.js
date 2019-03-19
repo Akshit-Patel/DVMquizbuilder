@@ -19,7 +19,7 @@ document.querySelector(".leaderboard").addEventListener("click", () => {
 function getOverview(){
     var data = $.ajax( {
         type: 'GET',
-        url: `/polysis/get_result`,
+        url: `/quiz-portal/polysis/get_result`,
         data: {
         },
         
@@ -39,7 +39,7 @@ function getOverview(){
 function getLeaderboard(){
     var data = $.ajax( {
         type: 'GET',
-        url: `/polysis/get_leaderboard`,
+        url: `/quiz-portal/polysis/get_leaderboard`,
         data: {
         },
         

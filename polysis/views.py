@@ -15,13 +15,13 @@ import os
 import re
 import datetime
 
-app_name='polysis'
+app_name='quiz-portal/polysis'
 
 def leaderboard(request):
-    return render(request, app_name+'/leaderboard.html')
+    return render(request, 'polysis/leaderboard.html')
 
 def instructions(request):
-    return render(request, app_name+'/instruction.html')
+    return render(request, 'polysis/instruction.html')
 
 @login_required(login_url='sign_in/')
 def index(request):
@@ -29,11 +29,11 @@ def index(request):
     if current_member.submitted:
         return redirect('/'+app_name+'/leaderboard/')
     else:
-        return render(request, app_name+'/index.html')
+        return render(request, 'polysis/index.html')
 
 def sign_in(request):
     if request.user.is_anonymous:
-        return render(request, app_name+'/sign_in.html')
+        return render(request, 'polysis/sign_in.html')
     else:
         return redirect('/'+app_name+'/')
 
@@ -445,7 +445,7 @@ def add_question(request):
     else:
         form = AddQuestion()
         set_key = len(Question.objects.all())
-        return render(request, app_name+'/add_question.html', {"form":form, "newkey":set_key})
+        return render(request, 'polysis/add_question.html', {"form":form, "newkey":set_key})
 
             
     ##LET THIS BE A REMINDER TO THOSE WHO FORGET THAT LOOPS EXIST - 

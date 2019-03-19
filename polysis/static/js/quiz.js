@@ -6,7 +6,7 @@ var questionNo= 0;
 function getTime(){
     var data = $.ajax( {
         type: 'GET',
-        url: `/polysis/get_time_remaining`,
+        url: `/quiz-portal/polysis/get_time_remaining`,
         data: {
         },
         success: function(data){   
@@ -30,7 +30,7 @@ var is_mcq;
 function getQuestionStatus(){
     var data = $.ajax( {
         type: 'GET',
-        url: `/polysis/gqs`,
+        url: `/quiz-portal/polysis/gqs`,
         data: {
         },
         
@@ -130,7 +130,7 @@ function navQues(quesNo)
 function getQuestion(quesNo){   
     var data = $.ajax( {
         type: 'GET',
-        url: `/polysis/get_question/${quesNo}`,
+        url: `/quiz-portal/polysis/get_question/${quesNo}`,
         data: {
         },
         success: function(data) {
@@ -206,7 +206,7 @@ function sendAnswer(quesNo,key){
     if(is_mcq){
         var data = $.ajax( {
             type: 'POST',
-            url: `/polysis/store_response/`,
+            url: `/quiz-portal/polysis/store_response/`,
             data: {
                 "queskey" : quesNo,
                 "anskey" : key
@@ -218,7 +218,7 @@ function sendAnswer(quesNo,key){
     else{
         var data = $.ajax( {
             type: 'POST',
-            url: `/polysis/store_response/`,
+            url: `/quiz-portal/polysis/store_response/`,
             data: {
                 "queskey" : quesNo,
                 "answer" : key
@@ -300,7 +300,7 @@ function markForReview(questionNo){
 function sendAnswer_Review(quesNo, key){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/atar/',
+        url: '/quiz-portal/polysis/atar/',
         data: {
             "queskey" : quesNo,
             "anskey" : key
@@ -313,7 +313,7 @@ function sendAnswer_Review(quesNo, key){
 function sendReview(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/atr/',
+        url: '/quiz-portal/polysis/atr/',
         data: {
             "queskey" : quesNo
         },
@@ -324,7 +324,7 @@ function sendReview(quesNo){
 function sendAttempted(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/ata/',
+        url: '/quiz-portal/polysis/ata/',
         data: {
             "queskey" : quesNo
         },
@@ -335,7 +335,7 @@ function sendAttempted(quesNo){
 function sendUnattempted(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/atna/',
+        url: '/quiz-portal/polysis/atna/',
         data: {
             "queskey" : quesNo
         },
@@ -508,7 +508,7 @@ function clear_response(){
 function sendClearResponse(quesNo){
     var data = $.ajax( {
         type: 'POST',
-        url: '/polysis/delete_response/',
+        url: '/quiz-portal/polysis/delete_response/',
         data: {
             "queskey" : quesNo
         },
@@ -522,7 +522,7 @@ function attempted_unattempted(){
     var noUnattempt = document.getElementById("unattempted");
     var data = $.ajax( {
         type: 'GET',
-        url: `/polysis/gqs`,
+        url: `/quiz-portal/polysis/gqs`,
         data: {
         },
         
