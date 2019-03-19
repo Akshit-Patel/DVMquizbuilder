@@ -307,11 +307,14 @@
 .instructions-body {
    /* position: absolute; */
    /* top: 100px; */
-   margin-top: 50px;
+   margin-top: 0px;
    width: 100%;
    padding: 0 120px;
    font-size: 1.4em;
    line-height: 35px;
+   overflow-x: hidden;
+   overflow-y: scroll;
+   height: 650px;
 }
 
 .start-button {
