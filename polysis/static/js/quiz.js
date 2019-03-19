@@ -18,7 +18,7 @@ function getTime(){
                setTimer(minutes,seconds);
            }
            else {
-            window.open("/polysis/submitquiz/", "_self");
+            window.open("/quiz-portal/polysis/submitquiz/", "_self");
            }
         }
     });    
@@ -92,7 +92,7 @@ function setTimer(maxtime_min, secondsLeft){
     
     function timeout() {
         clearInterval(timer_interval);
-        window.open("/polysis/submitquiz/", "_self");
+        window.open("/quiz-portal/polysis/submitquiz/", "_self");
         console.log("Still running");
      }
 }
@@ -539,5 +539,5 @@ attempted_unattempted();
 function submitQuiz(){
     var submitConfirmation = confirm("Do you really want to submit!");
     if(submitConfirmation == true)
-    window.open("/polysis/submitquiz", "_self");
+    window.open("/quiz-portal/polysis/submitquiz", "_self");
 }
