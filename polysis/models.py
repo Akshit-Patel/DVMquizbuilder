@@ -52,7 +52,11 @@ class Question(models.Model):
 
 class Answer(models.Model):
     
-    parent_question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
+    parent_question = models.ForeignKey(
+        Question,
+        related_name='answers',
+        on_delete=models.CASCADE
+        )
     content = models.TextField()
     is_correct = models.BooleanField(default=False)
     key = models.IntegerField(default=0)
