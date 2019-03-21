@@ -19,6 +19,7 @@
     align-items: center;
 }
 
+
 .event-title {
     height: 100%;
     width: 450px;
@@ -27,7 +28,6 @@
     border-right: 25px solid #70067b;
     border-left: 5px solid #70067b;
     font-size: 2.4em;
-    font-family: Arial, sans-serif;
     font-weight: 800;
 }
 .user-area-header {
@@ -290,8 +290,6 @@
 }
 
 .instructions-header {
-    /* position: absolute; */
-    /* top: 0; */
     width: 40%;
     height: 80px;
     background: #92069d;
@@ -305,22 +303,16 @@
 }
 
 .instructions-body {
-   /* position: absolute; */
-   /* top: 100px; */
-   margin-top: 0px;
    width: 100%;
-   padding: 0 120px;
+   padding: 50px 120px;
    font-size: 1.4em;
    line-height: 35px;
    overflow-x: hidden;
    overflow-y: scroll;
-   height: 650px;
+   max-height: 80%;
 }
 
 .start-button {
-   /* position: absolute; */
-   /* top:  */
-   margin-top: 100px;
    margin-left: calc(50% - 100px);
    width: 200px;
    height: 70px;
@@ -335,11 +327,6 @@
 .start-button:hover {cursor: pointer}
 .start-button:active {border: 4px solid #fff}
 
-.quesImg {
-    width: 200px;
-    height: 200px;
-    background-image: url('../../../media/ques_img/61D_hobbes.jpg');
-}
 
 
 
@@ -365,6 +352,9 @@
     .items {
         width: 44px;
         height: 44px;
+    }
+    .instructions-header {
+        width: 50%;
     }
 }
 
@@ -474,15 +464,13 @@
         border: none;
     }
     .instructions-body {
-        padding: 0 20px;
+        padding: 30px 20px;
         line-height: 25px;
         font-size: 1em;
         text-align: center;
-        margin-top: 21px;
     }
     .start-button {
         font-size: 1.3em;
-        margin-top: 50px;
         height: 50px;
     }
 }
