@@ -1,4 +1,21 @@
-var questionNo= 0;
+var questionNo = 0;
+
+var numOfQuestions;
+getNoOfQuestions();
+function getNoOfQuestions(){
+    var data = $.ajax( {
+        type: 'GET',
+        url: `/quiz-portal/polysis/get_no_of_questions`,
+        data: {
+        },
+        success: function(data){
+            numOfQuestions = data.no_of_questions;
+        }
+    });    
+}
+for(var i= 1; i<=numOfQuestions ; i++){
+    questionDisplay(i);
+}
 
 
 // ------------------- Timer and Instructions --------------------
@@ -108,11 +125,6 @@ function questionDisplay(content){
 }
 function incrementQuestionNo(){
     //code for ruuning closed loop for question number;
-}
-
-var numOfQuestions = 20;
-for(var i= 1; i<=numOfQuestions ; i++){
-    questionDisplay(i);
 }
 
 function navQues(quesNo)
