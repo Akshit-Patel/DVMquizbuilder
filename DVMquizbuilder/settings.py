@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'polysis',
+    'GamblingMaths',
     'django.contrib.sites',
 
     'allauth',
