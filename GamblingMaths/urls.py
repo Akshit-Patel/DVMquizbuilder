@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from GamblingMaths import views
 import re
 from django.conf.urls import url, include
 
