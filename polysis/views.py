@@ -57,6 +57,15 @@ def sign_out(request):
         
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+@csrf_exempt
+def get_no_of_questions(request):
+    no_of_questions = Question.objects.count()
+    
+    data = {
+        "no_of_questions": no_of_questions
+    }
+    return JsonResponse(data)
+
 
 @csrf_exempt
 def add_to_review(request):
