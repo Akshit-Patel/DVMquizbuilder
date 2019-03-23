@@ -1,6 +1,7 @@
 var questionNo = 0;
 
-var numOfQuestions;
+var numOfQuestions=0;
+
 getNoOfQuestions();
 function getNoOfQuestions(){
     var data = $.ajax( {
@@ -9,13 +10,17 @@ function getNoOfQuestions(){
         data: {
         },
         success: function(data){
-            numOfQuestions = data.no_of_questions;
+            numOfQuestions= data.no_of_questions;
+            for(var i= 1; i<=numOfQuestions ; i++){
+                questionDisplay(i);
+            }
         }
-    });    
+    }); 
 }
-for(var i= 1; i<=numOfQuestions ; i++){
-    questionDisplay(i);
-}
+
+
+
+
 
 
 // ------------------- Timer and Instructions --------------------
