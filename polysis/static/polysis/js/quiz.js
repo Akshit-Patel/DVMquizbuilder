@@ -371,7 +371,11 @@ function nextques(){
     doNext();
 }
 function doNext(){
-    questionNo++;
+    if(questionNo != numOfQuestions - 1){
+        questionNo++;
+    }else{
+        questionNo = 0;
+    }
     document.getElementsByClassName("radio_button")[0].innerHTML="";
     document.getElementsByClassName("question-text")[0].innerHTML="";
     getQuestion(questionNo);
@@ -466,17 +470,18 @@ function buttonDisplay(){
         if(attempted){
             nextBtn.style.display = "none";
             reviewBtn.style.display = "none";
-            save_nextBtn.style.display = "none";
+            save_nextBtn.style.display = "flex";
             save_reviewBtn.style.display = "none";
             clearBtn.style.display = "flex";
         }
         else{
             save_nextBtn.style.display = "none";
             save_reviewBtn.style.display = "none";
-            nextBtn.style.display = "none";
+            nextBtn.style.display = "flex";
             reviewBtn.style.display = "flex";
             clearBtn.style.display = "none";
         }
+
     }
     else{
         nextBtn.style.display = "flex";
@@ -498,7 +503,7 @@ function buttonDisplay(){
             reviewBtn.style.display = "flex";
             clearBtn.style.display = "none";
         }
-    }
+   }
     if(questionNo == 0)
         prevBtn.style.display = "none";
     else
