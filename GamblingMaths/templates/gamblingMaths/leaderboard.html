@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+        {%load static%}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+    <link rel="stylesheet" href="{%static 'css/leaderboard.css' %}">
+    <title>Quiz-Portal</title>
+</head>
+
+<body>
+    <div class="top-bar">
+        <div class="event-title">
+            Gambling Maths
+        </div>
+        <a href = "/quiz-portal/gamblingMaths/logout" class="logout-button">Log Out</a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="sections">
+            <div class="overview">Overview</div>
+            <div class="leaderboard">Leaderboard</div>
+        </div>
+
+
+        <div class="display-overview">
+            <section class="details">
+                <div id="user-name">Name: <!-- Your name here--></div>
+                <div id="score">Score: <!-- Your score here--> </div>
+
+                <div class="question-details">
+                    <div id="line-1">Attempted: </div>
+                    <div id="line-2">Unattempted: </div>
+                    <div id="line-3">Correct: </div>
+                    <div id="line-4">Incorrect: </div>
+                </div>
+            </section>
+
+            <section class="rank">
+                <h1>Rank</h1>
+                <div id="rank">
+                    <!-- Your rank here -->
+                </div>
+            </section>
+        </div>
+
+
+        <table class="display-leaderboard">
+            <tr>
+                <td>Rank</td>
+                <td>Name</td>
+                <td>Score</td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/leaderboard.js' %}"></script>
+
+</body>
+</html>
