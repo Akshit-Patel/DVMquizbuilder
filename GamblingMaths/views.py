@@ -32,6 +32,7 @@ def index(request):
         return render(request, 'gamblingMaths/index.html')
 
 def sign_in(request):
+    settings.LOGIN_REDIRECT_URL = '/quiz-portal/gamblingMaths/memcreate'
     if request.user.is_anonymous:
         return render(request, 'gamblingMaths/sign_in.html')
     else:
