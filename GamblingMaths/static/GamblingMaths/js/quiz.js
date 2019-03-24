@@ -1,6 +1,6 @@
 var questionNo = 0;
 
-var numOfQuestions;
+var numOfQuestions = 0;
 getNoOfQuestions();
 function getNoOfQuestions(){
     var data = $.ajax( {

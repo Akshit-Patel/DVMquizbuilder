@@ -138,6 +138,9 @@
     font-size: 0.6em;
     position: absolute;
     right: 0;
+}   
+.question-wrapper{
+    overflow-y: scroll;
 }
 #unattempted {width: 140px}
 #attempted {width: 140px}
@@ -146,6 +149,8 @@
     height: 100%;
     border: solid 2px #ddd;
     background: #e0dcdc;
+    height: 100%;
+    overflow-y: scroll;
 }
 .question-ref {
     align-items: center;
