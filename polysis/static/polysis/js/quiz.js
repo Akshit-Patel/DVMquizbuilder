@@ -471,7 +471,7 @@ function buttonDisplay(){
             nextBtn.style.display = "none";
             reviewBtn.style.display = "none";
             save_nextBtn.style.display = "flex";
-            save_reviewBtn.style.display = "none";
+            save_reviewBtn.style.display = "flex";
             clearBtn.style.display = "flex";
         }
         else{

@@ -1,6 +1,6 @@
 var questionNo = 0;
 
-var numOfQuestions;
+var numOfQuestions = 0;
 getNoOfQuestions();
 function getNoOfQuestions(){
     var data = $.ajax( {
@@ -10,12 +10,13 @@ function getNoOfQuestions(){
         },
         success: function(data){
             numOfQuestions = data.no_of_questions;
+            for(var i= 1; i<=numOfQuestions ; i++){
+                questionDisplay(i);
+            }
         }
     });    
 }
-for(var i= 1; i<=numOfQuestions ; i++){
-    questionDisplay(i);
-}
+
 
 
 // ------------------- Timer and Instructions --------------------
@@ -366,7 +367,11 @@ function nextques(){
     doNext();
 }
 function doNext(){
-    questionNo++;
+    if(questionNo != numOfQuestions - 1){
+        questionNo++;
+    }else{
+        questionNo = 0;
+    }
     document.getElementsByClassName("radio_button")[0].innerHTML="";
     document.getElementsByClassName("question-text")[0].innerHTML="";
     getQuestion(questionNo);
@@ -461,14 +466,14 @@ function buttonDisplay(){
         if(attempted){
             nextBtn.style.display = "none";
             reviewBtn.style.display = "none";
-            save_nextBtn.style.display = "none";
-            save_reviewBtn.style.display = "none";
+            save_nextBtn.style.display = "flex";
+            save_reviewBtn.style.display = "flex";
             clearBtn.style.display = "flex";
         }
         else{
             save_nextBtn.style.display = "none";
             save_reviewBtn.style.display = "none";
-            nextBtn.style.display = "none";
+            nextBtn.style.display = "flex";
             reviewBtn.style.display = "flex";
             clearBtn.style.display = "none";
         }
