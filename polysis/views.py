@@ -214,8 +214,9 @@ def delete_response(request):
         try:
             response = Response.objects.filter(question=question, member=current_member)
             response.delete()
+            return HttpResponse(status=200)
         except:
-            pass
+            return HttpResponse(status=500)
 
 @csrf_exempt
 #@login_required(login_url='/sign_in')
