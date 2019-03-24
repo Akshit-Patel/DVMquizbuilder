@@ -479,3 +479,8 @@
         height: 50px;
     }
 }
+@media all and (max-width: 320px) {
+    .top-bar #timer{
+        font-size: 1em;
+        }
+    }
