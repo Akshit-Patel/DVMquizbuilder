@@ -139,6 +139,9 @@
     position: absolute;
     right: 0;
 }
+.question-wrapper{
+    overflow-y: scroll;
+}
 #unattempted {width: 140px}
 #attempted {width: 140px}
 .question-wrapper {
@@ -375,6 +378,8 @@
         top: 0;
         left: -80%;
         transition: 0.3s ease;
+        height: 100%;
+        overflow-y: scroll;
     }
     .user-area { 
         width: 100%;
