@@ -129,12 +129,6 @@ input {
     }
     
     .add-button {
-        margin-top: 40px;
-        color: #fff;
-        font-size: 0.75em;
-        padding: 10px 20px;
-        background: #f33a1a;
-        border-radius: 10px;
-        box-shadow: 5px grey;
+        width: auto;
     }
 }
