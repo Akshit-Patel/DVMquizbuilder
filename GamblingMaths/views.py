@@ -50,7 +50,7 @@ def create_member(request):
         new_member.save()
         return render(request, 'gamblingMaths/add_members.html') #Redirect to wherever you want the user to go to after logging in.
 
-
+@csrf_exempt
 def add_team_member(request):
     user = request.user
     if request.method == "POST":
