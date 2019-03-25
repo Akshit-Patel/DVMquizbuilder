@@ -142,6 +142,7 @@ function navQues(quesNo)
     document.getElementsByClassName("radio_button")[0].innerHTML="";
     document.getElementsByClassName("question-text")[0].innerHTML="";
     getQuestion(quesNo);
+    askMarks();
 }
 
 function getQuestion(quesNo){   
@@ -380,6 +381,7 @@ function doNext(){
     document.getElementsByClassName("question-text")[0].innerHTML="";
     getQuestion(questionNo);
     attempted_unattempted();
+    askMarks();
 }
 
 var prev = document.querySelectorAll(".footer-buttons #prev")[0];
@@ -561,4 +563,38 @@ function submitQuiz(){
     var submitConfirmation = confirm("Do you really want to submit!");
     if(submitConfirmation == true)
     window.open("/quiz-portal/gamblingMaths/submitquiz", "_self");
+}
+
+
+function askMarks() {
+    var quesArea = document.getElementsByClassName("questionsView")[0];
+    var marksEnqArea = document.getElementsByClassName("get-marks")[0];
+    var buttonArea = document.getElementsByClassName("user-footer")[0];
+    var quesPalette = document.getElementsByClassName("questions-container")[0];
+    quesArea.style.display = "none";
+    marksEnqArea.style.display = "block";
+    buttonArea.style.display = "none";
+    quesPalette.style.display = "none";
+}
+
+function sendMarks() {
+    var quesNo = questionNo;
+    var marks = document.get_marks.marks.value;
+    var data = $.ajax( {
+        type: 'POST',
+        url: '/quiz-portal/gamblingMaths/store_marks/',
+        data: {
+            "queskey" : quesNo,
+            "marks" : marks
+        },
+        success: function(data) {             
+        }
+    });
+    var quesArea = document.getElementsByClassName("questionsView")[0];
+    var marksEnqArea = document.getElementsByClassName("get-marks")[0];
+    var buttonArea = document.getElementsByClassName("user-footer")[0];
+    quesArea.style.display = "block";
+    marksEnqArea.style.display = "none";
+    buttonArea.style.display = "flex";
+    quesPalette.style.display = "flex";
 }
