@@ -138,6 +138,10 @@ function navQues(quesNo)
     {
         closeNav();
     }
+    var buttons = document.querySelectorAll(".question-wrapper .questions-container div");
+    if(buttons[questionNo].className =="questions" && buttons[questionNo].className != "items attempted" && buttons[questionNo].className != "items to-be-reviewed" && questionNo != quesNo){
+        unattempted(questionNo);
+    }
     questionNo = quesNo;
     document.getElementsByClassName("radio_button")[0].innerHTML="";
     document.getElementsByClassName("question-text")[0].innerHTML="";
