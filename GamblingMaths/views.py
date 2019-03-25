@@ -43,7 +43,7 @@ def create_member(request):
     user = request.user
     name = user.first_name + " " + user.last_name
     if Member.objects.filter(user=user).exists():
-        return render(request, 'gamblingMaths/add_members.html') #Redirect to wherever you want the user to go to after logging in.
+        return redirect('/'+app_name+"/instructions/") #Redirect to wherever you want the user to go to after logging in.
     else:
         name = user.first_name + " " + user.last_name
         new_member = Member(user = user, name=name)
