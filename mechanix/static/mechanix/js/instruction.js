@@ -1,11 +1,14 @@
 function startTimer(){
     var data = $.ajax( {
         type: 'POST',
-        url: `/quiz-portal/mechanix/get_time_remaining/`,
+        url: `/quiz-portal/reverseEngineering/get_time_remaining/`,
         data: {
         },
         success: function(data) {  
         }
     
     });
+}
+function memberForm() {
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSdisvV9C_KCfjI0JFacdrst0qwTrlEGs_U948eSn2DA4FQxvg/viewform?vc=0&c=0&w=1")
 }
