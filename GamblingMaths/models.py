@@ -15,10 +15,13 @@ class Member(models.Model):
     start_time = models.DateTimeField(null=True)
     # As this app will be used for only one quiz.
 
-    submitted = models.BooleanField(default=False)
     has_started = models.BooleanField(default=False)
+    submitted = models.BooleanField(default=False)
     # Will be set to true if the member has submitted his/her test.
-    # Once true, the member cannot access the same test
+    # Once true, the member cannot access the same test.
+
+    team_member_name = models.CharField(max_length=50, blank=True, default='')
+    team_member_email = models.CharField(max_length=80, blank=True, default='')
 
     def __str__(self):
         return self.name

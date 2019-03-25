@@ -48,7 +48,31 @@ def create_member(request):
         name = user.first_name + " " + user.last_name
         new_member = Member(user = user, name=name)
         new_member.save()
-        return redirect('/'+app_name+"/instructions/") #Redirect to wherever you want the user to go to after logging in.
+        return render(request, 'gamblingMaths/add_members.html') #Redirect to wherever you want the user to go to after logging in.
+
+@csrf_exempt
+def add_team_member(request):
+    user = request.user
+    if request.method == "POST":
+        current_member = Member.objects.get(user = user)
+        team_member_email = request.POST.get("team_member_email")
+        team_member_name = request.POST.get("team_member_name")
+
+        # Only set the new values if they don't already exist.
+        for member in Member.objects.all():
+            if member.user.email == team_member_email or member.team_member_email == team_member_email:
+                return HttpResponse("This email already exists.")
+        
+        current_member.team_member_email = team_member_email
+        current_member.team_member_name = team_member_name
+        current_member.name = current_member.name + " & " + team_member_name
+        # Change the name of the member to include both members' names.
+
+        return redirect('/'+app_name+"/instructions/")
+
+    else:
+        return render(request, 'gamblingMaths/add_members.html')
+
 
 @login_required(login_url='sign_in')
 def sign_out(request):
