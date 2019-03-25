@@ -30,6 +30,11 @@
     font-size: 2.4em;
     font-weight: 800;
 }
+
+.event-title > span {
+    font-weight: 500;
+}
+
 .user-area-header {
     width: 100%;
     height: 70px;
@@ -60,7 +65,6 @@
     text-decoration: none;
     background-color: #db9419;
     padding: 5px 15px;
-    margin-left:  20px;
 }
 
 .wrapper {
@@ -72,7 +76,7 @@
 }
 
 .user-area {
-    width: 70%;
+    width: 98%;
     height: 100%;
     border: solid 2px #ddd;
     position: relative;
@@ -81,7 +85,7 @@
 .question-header {
     position: static;
     width: 100%;
-    height: 50px;
+    height: 100%;
     background: #fbab20;
     border-bottom: 5px solid #db9419;
     justify-content: flex-start;
@@ -110,7 +114,6 @@
 .footer-buttons {
     height: 100%;
     text-align: center;
-    font-size: 1em;
     color: #fff;
     align-items: center;
     margin-left: 10px;
@@ -119,6 +122,7 @@
 .footer-buttons > span {
     margin-right: 10px;
     background: #238dd0;
+    font-size: 1.5em;
     padding: 0 10px;
     cursor: pointer;
     height: 60px;
@@ -212,7 +216,7 @@
 .marks-button {
     margin-top: 40px;
     color: #fff;
-    font-size: 0.9em;
+    font-size: 1em;
     padding: 10px 20px;
     background: #f33a1a;
     border-radius: 10px;
@@ -370,7 +374,7 @@
         font-size: 2em;
     }
     .user-area { 
-        width: 65%;
+        width: 98%;
         height: 90vh;
     }
     .question-wrapper{
@@ -429,11 +433,9 @@
         justify-content: center;
         padding-left: 96px;
     }
-    .event-title > span {
-        font-weight: 500;
-    }
     .quit-button {
         font-size: 6vw;
+        height: 100%;
     }
     .top-bar {
         height: 9vh;
@@ -469,16 +471,19 @@
 
     .user-footer {
         width: 100%;
-        height: 80px;
+        height: 60px;
         padding: 10px 0;
     }
     .footer-buttons {
         width: 100%;
         justify-content: space-evenly;
         margin-left: 0;
-        font-size: 0.7em;
+        font-size: 1em;
     }
 
+    .footer-buttons > span {
+        height: 100%;
+    }
 
     .top-bar > span {
         width: 130px
@@ -506,5 +511,10 @@
     .start-button {
         font-size: 1.3em;
         height: 50px;
+    }
+
+    .get-marks > form {
+        font-size: 1.5em;
+        padding: 20px 5px;
     }
 }
