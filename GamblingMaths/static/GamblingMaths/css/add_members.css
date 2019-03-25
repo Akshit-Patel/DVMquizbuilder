@@ -22,12 +22,54 @@
     font-weight: 800;
 }
 
+.event-title > span {
+    font-weight: 500;
+}
+
+.skip-button {
+    display: flex;
+    height: 100%;
+    width: fit-content;
+    font-size: 2.5em;
+    padding: 0 20px;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 .members-wrapper {
     height: 92vh;
     width: 100%;
     padding: 50px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    padding: 20px 50px;
+    font-size: 1.75em;
+}
+
+input {
+    border: 0;
+    border-bottom: solid 2px #000;
+    margin-left: 5px;
+    background: rgba(0, 0, 0, 0);
+    font-size: 1em;
+}
+
+.add-button {
+    margin-top: 40px;
+    color: #fff;
+    font-size: 0.75em;
+    padding: 10px 20px;
+    background: #f33a1a;
+    border-radius: 10px;
+    box-shadow: 5px grey;
 }
 
 
@@ -38,6 +80,15 @@
     .event-title {
         font-size: 2em;
     }
+
+    .skip-button {
+        font-size: 2em;
+    }
+    
+    form {
+        padding: 20px 50px;
+        font-size: 1.5em;
+    }
 }
 
 
@@ -46,16 +97,44 @@
 
 /*-----------------mobile view--------------------------------*/
 @media all and (max-width: 500px) {
-    .top-bar {
-        height: 9vh;
-        background: #92069d;
-    }
 
     .event-title {
-        font-size: 6vw;
-        width: 100%;
-        border: none;
-        justify-content: center;
-        padding-left: 96px;
+        font-size: 1.5em;
+        width: 250px;
+    }
+
+    .skip-button {
+        font-size: 1.5em;
+        padding: 0 15px;
+    }
+    
+    .members-wrapper {
+        padding: 0;
+    }
+
+    h1 {
+        margin: 30px 7.5px;
+        font-size: 1.5em;
+    }
+
+    form {
+        padding: 10px;
+        font-size: 1.25em;
+    }
+    
+    input {
+        margin-left: 0px;
+        font-size: 1em;
+        width: 55%;
+    }
+    
+    .add-button {
+        margin-top: 40px;
+        color: #fff;
+        font-size: 0.75em;
+        padding: 10px 20px;
+        background: #f33a1a;
+        border-radius: 10px;
+        box-shadow: 5px grey;
     }
 }

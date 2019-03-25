@@ -403,6 +403,9 @@
         justify-content: center;
         padding-left: 96px;
     }
+    .event-title > span {
+        font-weight: 500;
+    }
     .quit-button {
         font-size: 6vw;
     }
