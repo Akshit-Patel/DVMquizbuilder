@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-{%load static%}
+<!-- {%load static%} -->
 
 <head>
     <meta charset="UTF-8">
@@ -21,10 +21,15 @@ crossorigin="anonymous"></script>
             <div class="instructions-header">Instructions Page</div>
         </div>
             <div class="instructions-body">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum quasi commodi totam itaque reprehenderit doloribus facere velit enim magnam! Ducimus sunt, rerum pariatur tempore dignissimos unde recusandae ea doloribus distinctio.Alias iusto quod porro voluptatum quisquam, corporis nam dolores esse sapiente odio at quo soluta, cupiditate, placeat doloremque debitis! Laborum ullam dolorum iste quaerat asperiores quidem cum amet quos delectus?Labore perferendis distinctio nihil dolorum harum magni ipsum animi numquam deleniti, expedita rem fugit veritatis incidunt velit enim optio consequuntur atque voluptas commodi. Saepe explicabo tenetur porro officiis nemo alias!
+                <div class="add-member">
+                    Register your team member <span onclick="memberForm()">here </span>!
+                </div>
+                1) +4 for every correct answer and -1 for every wrong answer.
+                <br>
+                2) Register the names of your team members participating in the google form link provided. 
             </div>
             <a style="text-decoration: none" href="/quiz-portal/reverseEngineering" class="start-button" onclick="startTimer()">Start Quiz</a>
-    </div>
+        </div>
 </body>
 
 <script type="text/javascript" src="{% static 'reverseEngineering/js/instruction.js' %}"></script>
