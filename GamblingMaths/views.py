@@ -68,6 +68,8 @@ def add_team_member(request):
         current_member.name = current_member.name + " & " + team_member_name
         # Change the name of the member to include both members' names.
 
+        current_member.save()
+
         return redirect('/'+app_name+"/instructions/")
 
     else:
