@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polysis',
     'GamblingMaths',
+    'reverseEngineering',
+    'mechanix',
     'django.contrib.sites',
 
     'allauth',

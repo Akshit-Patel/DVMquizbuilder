@@ -15,15 +15,15 @@ import os
 import re
 import datetime
 
-app_name='quiz-portal/mechanix'
-settings.LOGIN_REDIRECT_URL = '/quiz-portal/mechanix/memcreate'
+app_name='quiz-portal/reverseEngineering'
+settings.LOGIN_REDIRECT_URL = '/quiz-portal/reverseEngineering/memcreate'
 
 
 def leaderboard(request):
-    return render(request, 'mechanix/leaderboard.html')
+    return render(request, 'reverseEngineering/leaderboard.html')
 
 def instructions(request):
-    return render(request, 'mechanix/instruction.html')
+    return render(request, 'reverseEngineering/instruction.html')
 
 @login_required(login_url='sign_in/')
 def index(request):
@@ -31,12 +31,12 @@ def index(request):
     if current_member.submitted:
         return redirect('/'+app_name+'/leaderboard/')
     else:
-        return render(request, 'mechanix/index.html')
+        return render(request, 'reverseEngineering/index.html')
 
 def sign_in(request):
-    settings.LOGIN_REDIRECT_URL = '/quiz-portal/mechanix/memcreate'
+    settings.LOGIN_REDIRECT_URL = '/quiz-portal/reverseEngineering/memcreate'
     if request.user.is_anonymous:
-        return render(request, 'mechanix/sign_in.html')
+        return render(request, 'reverseEngineering/sign_in.html')
     else:
         return redirect('/'+app_name+'/')
 
@@ -458,7 +458,7 @@ def add_question(request):
     else:
         form = AddQuestion()
         set_key = len(Question.objects.all())
-        return render(request, 'mechanix/add_question.html', {"form":form, "newkey":set_key})
+        return render(request, 'reverseEngineering/add_question.html', {"form":form, "newkey":set_key})
 
             
     ##LET THIS BE A REMINDER TO THOSE WHO FORGET THAT LOOPS EXIST - 
