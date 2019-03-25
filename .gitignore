@@ -10,5 +10,4 @@ env
 db.sqlite3
 migrations
 DVMquizbuilder/config.py
-DVMquizbuilder/urls.py
-DVMquizbuilder/settings.py
+
