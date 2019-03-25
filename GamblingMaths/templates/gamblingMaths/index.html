@@ -41,6 +41,17 @@
                     </form>
                 </div>
             </div>
+
+            <div class="get-marks">
+                <form name = "get_marks">
+                    Enter marks for the Question: <input type="number" name="marks" required>
+                    <br>
+                    <center>
+                    <input type="submit" onclick="sendMarks()" value="Submit" class="marks-button">
+                    </center>
+                </form>
+            </div>
+
             <div class="user-footer">
                 <div class="footer-buttons">
                     <span id="prev">Prev</span>
@@ -70,13 +81,17 @@
                 </div> -->
             </div>
         </div>
+
         
+
         <div class="question-wrapper">
             <div class="question-header">
                 <span id="question-icon"></span>
                 <span>QUESTIONS</span>
             </div>
-            <div class="questions-container"></div>
+            <div class="questions-container">
+                <!-- question palette goes here -->
+            </div>
             <div class="questions-indicator">
                 <div class="indicators">
                     <span class="items attempted"></span>
@@ -114,7 +129,5 @@
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
         crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'GamblingMaths/js/quiz.js' %}"></script>
-    
 </body>
-
 </html>
