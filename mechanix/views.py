@@ -16,6 +16,8 @@ import re
 import datetime
 
 app_name='quiz-portal/mechanix'
+settings.LOGIN_REDIRECT_URL = '/quiz-portal/mechanix/memcreate'
+
 
 def leaderboard(request):
     return render(request, 'mechanix/leaderboard.html')
@@ -32,6 +34,7 @@ def index(request):
         return render(request, 'mechanix/index.html')
 
 def sign_in(request):
+    settings.LOGIN_REDIRECT_URL = '/quiz-portal/mechanix/memcreate'
     if request.user.is_anonymous:
         return render(request, 'mechanix/sign_in.html')
     else:

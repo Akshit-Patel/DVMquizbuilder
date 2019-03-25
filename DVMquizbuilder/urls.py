@@ -24,9 +24,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('quiz-portal/polysis/', include('polysis.urls')),
-    path('quiz-portal/gamblingMaths/', include('GamblingMaths.urls')),
-    url(r'^quiz-portal/accounts/', include('allauth.urls')),
+    path('polysis/', include('polysis.urls')),
+    path('gamblingMaths/', include('GamblingMaths.urls')),
+    path('reverseEngineering/', include('reverseEngineering.urls')),
+    path('mechanix/', include('mechanix.urls')),
+    url(r'accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

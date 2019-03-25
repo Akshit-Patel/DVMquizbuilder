@@ -8,7 +8,7 @@ from django.db import models
 
 class Member(models.Model):
 
-    user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE,related_name='reverseEngineeringMember')
     name = models.CharField(max_length=50)
     score = models.IntegerField(default=0)
     
