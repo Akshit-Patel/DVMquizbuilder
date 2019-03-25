@@ -22,13 +22,17 @@
     </div>
     <div class="members-wrapper">
         <h1>Would You like to have a Team Member?</h1>
-        <form>
-            Member's Name: <input type="text" name="member-name">
+        <form name="member_details" action="javascript:addMember()">
+            Member's Name: <input type="text" name="member_name" required>
             <br><br>
-            Member's Email: <input type="text" name="member-name">
+            Member's Email: <input type="email" name="member_email" required>
             <br>
-            <center><input type="button" value="Add Member and Continue" class="add-button"></center>
+            <center><input type="submit" value="Add Member and Continue" class="add-button" onclick="addMember()"></center>
         </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'GamblingMaths/js/add_members.js' %}"></script>
 </body>
 </html>
