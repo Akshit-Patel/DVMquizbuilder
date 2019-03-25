@@ -140,6 +140,8 @@ tr :nth-of-type(1) {
 }
 td{
     border: black 1px solid;
+    text-align: center;
+    vertical-align: middle;
 }
 
 table tr:nth-of-type(even){
