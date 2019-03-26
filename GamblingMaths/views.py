@@ -14,8 +14,22 @@ from django.conf import settings
 import os
 import re
 import datetime
+import random
 
 app_name='quiz-portal/gamblingMaths'
+
+def generate_keys():
+    key_list = []
+    for x in range(2):
+        y = random.randint(0,20)
+        while True:
+            z = random.randint(0,20)
+            if z == y:
+                continue
+            else:
+                break
+        key_list = [y,z]
+    return key_list
 
 def leaderboard(request):
     return render(request, 'gamblingMaths/leaderboard.html')
@@ -38,17 +52,41 @@ def sign_in(request):
     else:
         return redirect('/'+app_name+'/')
 
+#---------------------------------------------------------------USER INITIALIZATION VIEWS----------------------------------------------------------------------------
+
 #This view will create a member object assosciated with the user object on log in but only if it does not exist.
+#It will also generate the set of questions for the user but only if it does not exist.
 def create_member(request):
     user = request.user
     name = user.first_name + " " + user.last_name
     if Member.objects.filter(user=user).exists():
+        generate_questions(request)
         return redirect('/'+app_name+"/instructions/") #Redirect to wherever you want the user to go to after logging in.
     else:
         name = user.first_name + " " + user.last_name
         new_member = Member(user = user, name=name)
         new_member.save()
+        generate_questions(request)
         return render(request, 'gamblingMaths/add_members.html') #Redirect to wherever you want the user to go to after logging in.
+
+#This is the logic for generating the questions
+def generate_questions(request):
+    current_member = Member.objects.get(user = request.user)
+    if current_member.questions_generated:
+        pass
+    else:
+        for x in range(1,6):
+            questions = Question.objects.filter(pool = x)
+            rand_list = generate_keys() #Generate a list of two *different* random integers between 1 and 19, both inclusive.
+            for y in range(2):
+                question = MemberQuestion.objects.create(
+                    index = y,
+                    member = current_member,
+                    question = questions[rand_list[y]]
+                )
+            current_member.questions_generated = True
+            current_member.save()
+
 
 @csrf_exempt
 def add_team_member(request):
@@ -75,6 +113,21 @@ def add_team_member(request):
     else:
         return render(request, 'gamblingMaths/add_members.html')
 
+@login_required
+def submit_if_eliminated(request):
+    current_member = Member.objects.get(user=request.user)
+    if current_member.score == 0:
+        current_member.is_eliminated = True
+    else:
+        current_member.is_eliminated = False
+
+    if current_member.is_eliminated:
+        return redirect('/submitquiz')
+    else:
+        pass
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 @login_required(login_url='sign_in')
 def sign_out(request):
@@ -82,167 +135,20 @@ def sign_out(request):
     logout(request)
     return redirect('/'+app_name+'/sign_in')
         
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 @csrf_exempt
-def get_no_of_questions(request):
-    
-    data = {
-        "no_of_questions": 10
-    }
-    return JsonResponse(data)
+@login_required
+def get_uncertainty(request, pass_uncertainty):
+    range_factor = 5
+    uncertainty = int(request.POST.get("uncertainty"))
+    lower = uncertainty - range_factor
+    upper = uncertainty + range_factor + 1
 
+    final_uncertainty = random.randint(lower, upper)
 
-@csrf_exempt
-def add_to_review(request):
-    current_member = Member.objects.get(user = request.user)
-    if request.method == "POST":
-        queskey = request.POST.get("queskey")    
-        question = Question.objects.get(questionkey=queskey)
-        
-        if current_member.questions_attempted.filter(questionkey=queskey).exists():
-            current_member.questions_attempted.remove(question)
-        if current_member.not_attempted.filter(questionkey=queskey).exists():
-            current_member.not_attempted.remove(question)
-        if current_member.ar_questions.filter(questionkey=queskey).exists():
-            current_member.ar_questions.remove(question)
-        
-        current_member.marked_for_review.add(question)
-
-        return HttpResponse("Question marked for review") #This needs to be changed later
-    else:
-        q = current_member.marked_for_review.all()
-        atrlist = []
-        for question in q:
-            atrlist.append(question.questionkey)
-        data = {
-            "atrlist" : atrlist
-        }
-        return JsonResponse(data)
-
-@csrf_exempt
-def add_to_not_attempted(request):
-    current_member = Member.objects.get(user = request.user)
-    if request.method == "POST":
-        queskey = request.POST.get("queskey")     
-        question = Question.objects.get(questionkey=queskey)
-#To make sure that a question does not appear in attempted and not attempted both.        
-        if current_member.questions_attempted.filter(questionkey=queskey).exists():
-            current_member.questions_attempted.remove(question)
-        if current_member.marked_for_review.filter(questionkey=queskey).exists():
-            current_member.marked_for_review.remove(question)
-        if current_member.ar_questions.filter(questionkey=queskey).exists():
-            current_member.ar_questions.remove(question)
-
-        current_member.not_attempted.add(question)
-
-        return HttpResponse("Question added to not attempted") #This needs to be changed later
-    else:
-        q = current_member.not_attempted.all()
-        atnalist = []
-        for question in q:
-            atnalist.append(question.questionkey)
-        data = {
-            "atnalist" : atnalist
-        }
-        return JsonResponse(data)
-
-@csrf_exempt
-def add_to_attempted(request):
-    current_member = Member.objects.get(user = request.user)
-    if request.method == "POST":
-        queskey = request.POST.get("queskey")    
-        question = Question.objects.get(questionkey=queskey)
-#To make sure that a question does not appear in attempted and not attempted both.
-        if current_member.marked_for_review.filter(questionkey=queskey).exists():
-            current_member.marked_for_review.remove(question)
-        if current_member.not_attempted.filter(questionkey=queskey).exists():
-            current_member.not_attempted.remove(question)
-        if current_member.ar_questions.filter(questionkey=queskey).exists():
-            current_member.ar_questions.remove(question)
-        
-        current_member.questions_attempted.add(question)
-
-        return HttpResponse("Question added to attempted") #This needs to be changed later
-    else:
-        q = current_member.questions_attempted.all()
-        atalist = []
-        for question in q:
-            atalist.append(question.questionkey)
-        data = {
-            "atalist" : atalist
-        }
-        return JsonResponse(data)
-
-@csrf_exempt
-def add_to_ar(request):
-    current_member = Member.objects.get(user = request.user)
-    if request.method == "POST":
-        queskey = request.POST.get("queskey")    
-        question = Question.objects.get(questionkey=queskey)
-#To make sure that a question does not appear in attempted and not attempted both.
-        if current_member.marked_for_review.filter(questionkey=queskey).exists():
-            current_member.marked_for_review.remove(question)
-        if current_member.not_attempted.filter(questionkey=queskey).exists():
-            current_member.not_attempted.remove(question)
-        if current_member.questions_attempted.filter(questionkey=queskey).exists():
-            current_member.questions_attempted.remove(question)
-        
-        current_member.ar_questions.add(question)
-
-        return HttpResponse("Question added to attempted") #This needs to be changed later
-    else:
-        q = current_member.ar_questions.all()
-        arlist = []
-        for question in q:
-            arlist.append(question.questionkey)
-        data = {
-            "arlist" : arlist
-        }
-        return JsonResponse(data)
-
-#---------------------------------------------------------------------------------------------------------------------------------------------------------
-
-@csrf_exempt
-def get_question_status(request):
-    current_member = Member.objects.get(user = request.user)
-    atrlist = []
-    atnalist = []
-    atalist = []
-    arlist = []
-
-    for question in current_member.marked_for_review.all(): #Add to review
-        atrlist.append(question.questionkey)
-    for question in current_member.not_attempted.all():  #Add to not_attempted
-        atnalist.append(question.questionkey)
-    for question in current_member.questions_attempted.all():  #Add to attempted
-        atalist.append(question.questionkey)
-    for question in current_member.ar_questions.all(): #Add to attempted and reviewed
-        arlist.append(question.questionkey)
-    x = int(Question.objects.count())
-    
-    data = {
-        "reviewQues" : atrlist,
-        "attemptedQues" : atalist,
-        "unattemptedQues" : atnalist,
-        "reviewAttemptedQues" : arlist,
-        "numOfQuestions" : x
-    }
-    return JsonResponse(data)
-
-
-@csrf_exempt
-def delete_response(request):
     current_member = Member.objects.get(user=request.user)
-    if request.method == "POST":
-        queskey = request.POST.get("queskey")
-        question = Question.objects.get(questionkey=queskey)
-        try:
-            response = Response.objects.filter(question=question, member=current_member)
-            response.delete()
-            return HttpResponse(status=200)
-        except:
-            return HttpResponse(status=500)
+    current_member.uncertainty = final_uncertainty
+    current_member.save()
+
 
 @csrf_exempt
 #@login_required(login_url='/sign_in')
@@ -251,27 +157,47 @@ def store_response(request):
     if request.method == 'POST':
         queskey = request.POST.get("queskey")
         question = Question.objects.get(questionkey=queskey)
+        member_questions = question.related_mq_object.all()
+        current_member_question = member_questions.get(member=current_member)
+        uncertainty = current_member.uncertainty
+        score = current_member.score
+
         try:
             anskey = request.POST.get("anskey")
             answers = question.answers.all()
             answer = answers.get(key=anskey)
-            try:
-                a = Response.objects.filter(member=current_member, question=question)[0]
-                a.answer_mcq = answer
-                a.save()
-            except:
-                a = Response(member=current_member, question=question, answer_mcq=answer)
-                a.save()            
+            # try:
+            #     a = Response.objects.filter(member=current_member, question=question)[0]
+            #     a.answer_mcq = answer
+            #     a.save()
+            # except:
+            a = Response(member=current_member, question=question, answer_mcq=answer)
+            a.save()
+            if answer.is_correct:
+                current_member.score = (score + (uncertainty*score)/100)//1 + 1
+            else:
+                current_member.score = (score - (uncertainty*score)/100)//1 + 1 
+            current_member.save()           
         except:
             answer = request.POST.get("answer")
-            try:
-                a = Response.objects.filter(member=current_member, question=question)[0]
-                a.answer_text = answer
-                a.save()
-            except:
-                a = Response(member=current_member, question=question, answer_text=answer)
-                a.save() 
-        return HttpResponse("Answer stored")
+            # try:
+            #     a = Response.objects.filter(member=current_member, question=question)[0]
+            #     a.answer_text = answer
+            #     a.save()
+            # except:
+            a = Response(member=current_member, question=question, answer_text=answer)
+            a.save() 
+            if answer == question.answer:
+                current_member.score = (score + (uncertainty*score)/100)//1 + 1  #x//1 is floor function for x
+            else:
+                current_member.score = (score - (uncertainty*score)/100)//1 + 1
+            current_member.save()
+
+        current_member_question.delete() #Just to make sure the user cannot go back to a question he's skipped/answered, no matter what.
+        submit_if_eliminated(request) #eliminate the user if his score becomes zero.
+
+    return HttpResponse("Answer stored")
+
 
 def get_leaderboard(request):
     current_member = Member.objects.get(user=request.user)
@@ -290,6 +216,7 @@ def get_leaderboard(request):
         return JsonResponse(data)
     else:
         return HttpResponse("IDK what to put here")
+
 
 @login_required(login_url='sign_in/')
 def submit(request):
@@ -366,28 +293,18 @@ def get_score(request):
     else:
         return HttpResponse("The user needs to submit first")
 
-#@login_required(login_url='/sign_in')
-def get_question(request, queskey):
-    print('asdo')
+@login_required(login_url='/sign_in')
+def get_question(request, pool, queskey):
     current_member = Member.objects.get(user=request.user)
-    current_question = Question.objects.get(questionkey=queskey)
-    print('hello ')
+
+    question_data = MemberQuestion.objects.filter(pool=pool, member = current_member)[0] #Choose a question using the MemberQuestion model.
+    current_question = question_data.question
+
     marked_key = 69
     entered_answer = "NULL1234"
-    try:
-        response = Response.objects.filter(member=current_member, question=current_question)[0]
-        marked_key = response.answer_mcq.key
-    except:
-        pass
-
-    try:
-        response = Response.objects.filter(member=current_member, question=current_question)[0]
-        entered_answer = response.answer_text
-    except:
-        pass
     
     if current_question.is_image:
-        base = settings.MEDIA_ROOT
+        base = settings.MEDIA_ROOT #Dunno why this is here. Not removing this.
         media = os.path.abspath(os.path.join(base, os.pardir))
         image_url = current_question.image.url
     else:
@@ -405,7 +322,7 @@ def get_question(request, queskey):
             "keys":keylist,
             "mcq_flag":True,
             "image_flag":current_question.is_image,
-            "marked_answer":marked_key,
+            # "marked_answer":marked_key,
             "image_url": image_url
         }
         return JsonResponse(data)
@@ -413,9 +330,11 @@ def get_question(request, queskey):
         data = {
             "question":current_question.content,
             "mcq_flag":False,
-            "entered_answer":entered_answer
+            # "entered_answer":entered_answer
         }
         return JsonResponse(data)
+
+
 
 @csrf_exempt        
 def get_time_remaining(request):
@@ -455,33 +374,33 @@ def get_time_remaining(request):
 
 
 
-@staff_member_required
-def add_question(request):
-    if request.method == "POST":
-        form = AddQuestion(request.POST)
-        if form.is_valid():
-            ques_content = form.cleaned_data.get("question_content")
-            key = form.cleaned_data.get("question_key")
-            question = Question(questionkey=key, content=ques_content, is_mcq=True)
-            question.save()
-            question = Question.objects.get(questionkey=key)
+# @staff_member_required
+# def add_question(request):
+#     if request.method == "POST":
+#         form = AddQuestion(request.POST)
+#         if form.is_valid():
+#             ques_content = form.cleaned_data.get("question_content")
+#             key = form.cleaned_data.get("question_key")
+#             question = Question(questionkey=key, content=ques_content, is_mcq=True)
+#             question.save()
+#             question = Question.objects.get(questionkey=key)
 
-            for i in range(4):
-                content = form.cleaned_data.get("option_" + str(i+1))
-                answer = Answer(parent_question=question, content=content, key=i+1)
-                answer.save()
+#             for i in range(4):
+#                 content = form.cleaned_data.get("option_" + str(i+1))
+#                 answer = Answer(parent_question=question, content=content, key=i+1)
+#                 answer.save()
             
-            true_key = form.cleaned_data.get("true_option")
-            answer = question.answers.get(key=true_key)
-            answer.is_correct = True
-            answer.save()
-            return redirect('/'+app_name+"/add_question")
-        else:
-            return HttpResponse("Please check the data you have entered")
-    else:
-        form = AddQuestion()
-        set_key = len(Question.objects.all())
-        return render(request, 'gamblingMaths/add_question.html', {"form":form, "newkey":set_key})
+#             true_key = form.cleaned_data.get("true_option")
+#             answer = question.answers.get(key=true_key)
+#             answer.is_correct = True
+#             answer.save()
+#             return redirect('/'+app_name+"/add_question")
+#         else:
+#             return HttpResponse("Please check the data you have entered")
+#     else:
+#         form = AddQuestion()
+#         set_key = len(Question.objects.all())
+#         return render(request, 'gamblingMaths/add_question.html', {"form":form, "newkey":set_key})
 
             
     ##LET THIS BE A REMINDER TO THOSE WHO FORGET THAT LOOPS EXIST - 
@@ -554,3 +473,169 @@ def add_question(request):
     #                 ans_list = []
     #                 ans_list.append("2")
     #                 answer = response.answer_text
+
+
+# @csrf_exempt
+# def add_to_review(request):
+#     current_member = Member.objects.get(user = request.user)
+#     if request.method == "POST":
+#         queskey = request.POST.get("queskey")    
+#         question = Question.objects.get(questionkey=queskey)
+        
+#         if current_member.questions_attempted.filter(questionkey=queskey).exists():
+#             current_member.questions_attempted.remove(question)
+#         if current_member.not_attempted.filter(questionkey=queskey).exists():
+#             current_member.not_attempted.remove(question)
+#         if current_member.ar_questions.filter(questionkey=queskey).exists():
+#             current_member.ar_questions.remove(question)
+        
+#         current_member.marked_for_review.add(question)
+
+#         return HttpResponse("Question marked for review") #This needs to be changed later
+#     else:
+#         q = current_member.marked_for_review.all()
+#         atrlist = []
+#         for question in q:
+#             atrlist.append(question.questionkey)
+#         data = {
+#             "atrlist" : atrlist
+#         }
+#         return JsonResponse(data)
+
+# @csrf_exempt
+# def add_to_not_attempted(request):
+#     current_member = Member.objects.get(user = request.user)
+#     if request.method == "POST":
+#         queskey = request.POST.get("queskey")     
+#         question = Question.objects.get(questionkey=queskey)
+# #To make sure that a question does not appear in attempted and not attempted both.        
+#         if current_member.questions_attempted.filter(questionkey=queskey).exists():
+#             current_member.questions_attempted.remove(question)
+#         if current_member.marked_for_review.filter(questionkey=queskey).exists():
+#             current_member.marked_for_review.remove(question)
+#         if current_member.ar_questions.filter(questionkey=queskey).exists():
+#             current_member.ar_questions.remove(question)
+
+#         current_member.not_attempted.add(question)
+
+#         return HttpResponse("Question added to not attempted") #This needs to be changed later
+#     else:
+#         q = current_member.not_attempted.all()
+#         atnalist = []
+#         for question in q:
+#             atnalist.append(question.questionkey)
+#         data = {
+#             "atnalist" : atnalist
+#         }
+#         return JsonResponse(data)
+
+# @csrf_exempt
+# def add_to_attempted(request):
+#     current_member = Member.objects.get(user = request.user)
+#     if request.method == "POST":
+#         queskey = request.POST.get("queskey")    
+#         question = Question.objects.get(questionkey=queskey)
+# #To make sure that a question does not appear in attempted and not attempted both.
+#         if current_member.marked_for_review.filter(questionkey=queskey).exists():
+#             current_member.marked_for_review.remove(question)
+#         if current_member.not_attempted.filter(questionkey=queskey).exists():
+#             current_member.not_attempted.remove(question)
+#         if current_member.ar_questions.filter(questionkey=queskey).exists():
+#             current_member.ar_questions.remove(question)
+        
+#         current_member.questions_attempted.add(question)
+
+#         return HttpResponse("Question added to attempted") #This needs to be changed later
+#     else:
+#         q = current_member.questions_attempted.all()
+#         atalist = []
+#         for question in q:
+#             atalist.append(question.questionkey)
+#         data = {
+#             "atalist" : atalist
+#         }
+#         return JsonResponse(data)
+
+# @csrf_exempt
+# def add_to_ar(request):
+#     current_member = Member.objects.get(user = request.user)
+#     if request.method == "POST":
+#         queskey = request.POST.get("queskey")    
+#         question = Question.objects.get(questionkey=queskey)
+# #To make sure that a question does not appear in attempted and not attempted both.
+#         if current_member.marked_for_review.filter(questionkey=queskey).exists():
+#             current_member.marked_for_review.remove(question)
+#         if current_member.not_attempted.filter(questionkey=queskey).exists():
+#             current_member.not_attempted.remove(question)
+#         if current_member.questions_attempted.filter(questionkey=queskey).exists():
+#             current_member.questions_attempted.remove(question)
+        
+#         current_member.ar_questions.add(question)
+
+#         return HttpResponse("Question added to attempted") #This needs to be changed later
+#     else:
+#         q = current_member.ar_questions.all()
+#         arlist = []
+#         for question in q:
+#             arlist.append(question.questionkey)
+#         data = {
+#             "arlist" : arlist
+#         }
+#         return JsonResponse(data)
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# @csrf_exempt
+# def get_no_of_questions(request):
+    
+#     data = {
+#         "no_of_questions": 10
+#     }
+#     return JsonResponse(data)
+
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# @csrf_exempt
+# def get_question_status(request):
+#     current_member = Member.objects.get(user = request.user)
+#     atrlist = []
+#     atnalist = []
+#     atalist = []
+#     arlist = []
+
+#     for question in current_member.marked_for_review.all(): #Add to review
+#         atrlist.append(question.questionkey)
+#     for question in current_member.not_attempted.all():  #Add to not_attempted
+#         atnalist.append(question.questionkey)
+#     for question in current_member.questions_attempted.all():  #Add to attempted
+#         atalist.append(question.questionkey)
+#     for question in current_member.ar_questions.all(): #Add to attempted and reviewed
+#         arlist.append(question.questionkey)
+#     x = int(Question.objects.count())
+    
+#     data = {
+#         "reviewQues" : atrlist,
+#         "attemptedQues" : atalist,
+#         "unattemptedQues" : atnalist,
+#         "reviewAttemptedQues" : arlist,
+#         "numOfQuestions" : x
+#     }
+#     return JsonResponse(data)
+
+
+# @csrf_exempt
+# def delete_response(request):
+#     current_member = Member.objects.get(user=request.user)
+#     if request.method == "POST":
+#         queskey = request.POST.get("queskey")
+#         question = Question.objects.get(questionkey=queskey)
+#         try:
+#             response = Response.objects.filter(question=question, member=current_member)
+#             response.delete()
+#             return HttpResponse(status=200)
+#         except:
+#             return HttpResponse(status=500)
