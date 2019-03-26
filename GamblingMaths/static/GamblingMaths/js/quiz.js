@@ -196,7 +196,7 @@ function getQuestion(quesNo){
                     var radioButton = document.createElement("input");
                     radioButton.setAttribute("type","radio");
                     radioButton.setAttribute("name","answer");
-                    radioButton.setAttribute("onclick","buttonDisplay()");
+                    // radioButton.setAttribute("onclick","buttonDisplay()");
                     radioButton.setAttribute("key",`${data.keys[i]}`);
                     // if(data.keys[i] == data.marked_answer){
                     //     radioButton.setAttribute("checked", "checked");
@@ -222,7 +222,7 @@ function getQuestion(quesNo){
                 radioHolder.append(radioButton);
                 form.appendChild(radioHolder);
                 var txtBox = document.querySelectorAll(".questionsView .form .radio_button .div ,input")[0];
-                txtBox.addEventListener("input", buttonDisplay);
+                // txtBox.addEventListener("input", buttonDisplay);
             }
             document.getElementById("user-question-header").innerHTML = "Question: " + (questionNo+1);
             // buttonDisplay();
