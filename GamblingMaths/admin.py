@@ -8,7 +8,7 @@ class AnswerInline(admin.StackedInline):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    fields = ['questionkey', 'content', 'score_increment', 'score_decrement', 'image', ('is_image', 'is_mcq')]
+    fields = ['questionkey', 'content', 'pool', 'image', ('is_image', 'is_mcq')]
     inlines = [AnswerInline]
 
 

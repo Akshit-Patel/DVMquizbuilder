@@ -1,4 +1,4 @@
-from .models import Member, Question, Answer, Response
+from .models import Member, Question, Answer, Response, MemberQuestion
 from .forms import AddQuestion
 
 from django.utils import timezone
@@ -20,15 +20,15 @@ app_name='quiz-portal/gamblingMaths'
 
 def generate_keys():
     key_list = []
-    for x in range(2):
-        y = random.randint(0,20)
-        while True:
-            z = random.randint(0,20)
-            if z == y:
-                continue
-            else:
-                break
-        key_list = [y,z]
+    
+    y = random.randint(0,2)
+    while True:
+        z = random.randint(0,2)
+        if z == y:
+            continue
+        else:
+            break
+    key_list = [y,z]
     return key_list
 
 def leaderboard(request):
@@ -75,14 +75,18 @@ def generate_questions(request):
     if current_member.questions_generated:
         pass
     else:
-        for x in range(1,6):
-            questions = Question.objects.filter(pool = x)
-            rand_list = generate_keys() #Generate a list of two *different* random integers between 1 and 19, both inclusive.
+        for x in range(0,5):
+            questions = Question.objects.filter(pool = x+1)
+            print(questions)
+            rand_list = generate_keys()
+            print(rand_list)
+             #Generate a list of two *different* random integers between 1 and 19, both inclusive.
             for y in range(2):
                 question = MemberQuestion.objects.create(
-                    index = y,
+                    index = y+x*2,
                     member = current_member,
-                    question = questions[rand_list[y]]
+                    question = questions[rand_list[y]],
+                    pool = x+1
                 )
             current_member.questions_generated = True
             current_member.save()
@@ -137,8 +141,9 @@ def sign_out(request):
         
 @csrf_exempt
 @login_required
-def get_uncertainty(request, pass_uncertainty):
+def set_uncertainty(request):
     range_factor = 5
+    #checks for max and min of pass_uncertainty
     uncertainty = int(request.POST.get("uncertainty"))
     lower = uncertainty - range_factor
     upper = uncertainty + range_factor + 1
@@ -148,6 +153,7 @@ def get_uncertainty(request, pass_uncertainty):
     current_member = Member.objects.get(user=request.user)
     current_member.uncertainty = final_uncertainty
     current_member.save()
+    return JsonResponse({"message":"Updated Uncertainty."})
 
 
 @csrf_exempt
@@ -156,9 +162,14 @@ def store_response(request):
     current_member = Member.objects.get(user=request.user)
     if request.method == 'POST':
         queskey = request.POST.get("queskey")
-        question = Question.objects.get(questionkey=queskey)
+        pool = int(request.POST.get("pool"))
+        print(queskey)
+        print(pool)
+        question = Question.objects.get(questionkey=queskey, pool=pool)
         member_questions = question.related_mq_object.all()
+        print(member_questions) 
         current_member_question = member_questions.get(member=current_member)
+        print(current_member_question)
         uncertainty = current_member.uncertainty
         score = current_member.score
 
@@ -171,7 +182,7 @@ def store_response(request):
             #     a.answer_mcq = answer
             #     a.save()
             # except:
-            a = Response(member=current_member, question=question, answer_mcq=answer)
+            a = Response(member=current_member, question=question, answer_mcq=answer, answer_text='')
             a.save()
             if answer.is_correct:
                 current_member.score = (score + (uncertainty*score)/100)//1 + 1
@@ -180,6 +191,7 @@ def store_response(request):
             current_member.save()           
         except:
             answer = request.POST.get("answer")
+            print(answer)
             # try:
             #     a = Response.objects.filter(member=current_member, question=question)[0]
             #     a.answer_text = answer
@@ -195,7 +207,7 @@ def store_response(request):
 
         current_member_question.delete() #Just to make sure the user cannot go back to a question he's skipped/answered, no matter what.
         submit_if_eliminated(request) #eliminate the user if his score becomes zero.
-
+    print(current_member.score)
     return HttpResponse("Answer stored")
 
 
@@ -294,10 +306,10 @@ def get_score(request):
         return HttpResponse("The user needs to submit first")
 
 @login_required(login_url='/sign_in')
-def get_question(request, pool, queskey):
+def get_question(request, pool):
     current_member = Member.objects.get(user=request.user)
 
-    question_data = MemberQuestion.objects.filter(pool=pool, member = current_member)[0] #Choose a question using the MemberQuestion model.
+    question_data = MemberQuestion.objects.filter(pool=int(pool), member = current_member)[0] #Choose a question using the MemberQuestion model.
     current_question = question_data.question
 
     marked_key = 69
@@ -321,6 +333,7 @@ def get_question(request, pool, queskey):
             "answers":answerlist,
             "keys":keylist,
             "mcq_flag":True,
+            "ques_key":current_question.questionkey,
             "image_flag":current_question.is_image,
             # "marked_answer":marked_key,
             "image_url": image_url
