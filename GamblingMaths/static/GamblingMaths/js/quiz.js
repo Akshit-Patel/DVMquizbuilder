@@ -14,38 +14,33 @@ var numOfQuestions = 10;
 //                 questionDisplay(i);
 //             }
 //         }
-//     });    
+//     });
 // }
-
-
 
 // ------------------- Timer and Instructions --------------------
 
-function getTime(){
-    var data = $.ajax( {
-        type: 'GET',
-        url: `/quiz-portal/gamblingMaths/get_time_remaining`,
-        data: {
-        },
-        success: function(data){   
-           var obj = JSON.parse;
-           if (!data.message) {
-               var time = data.time_remaining;
-               var minutes = parseInt(time/60);
-               var seconds = parseInt(time%60);
-               setTimer(minutes,seconds);
-           }
-           else {
-            window.open("/quiz-portal/gamblingMaths/submitquiz/", "_self");
-           }
-        }
-    });    
+function getTime() {
+  var data = $.ajax({
+    type: "GET",
+    url: `/quiz-portal/gamblingMaths/get_time_remaining`,
+    data: {},
+    success: function(data) {
+      var obj = JSON.parse;
+      if (!data.message) {
+        var time = data.time_remaining;
+        var minutes = parseInt(time / 60);
+        var seconds = parseInt(time % 60);
+        setTimer(minutes, seconds);
+      } else {
+        window.open("/quiz-portal/gamblingMaths/submitquiz/", "_self");
+      }
+    }
+  });
 }
 
 getTime();
 
 var is_mcq;
-
 
 //-----------------------------------------------------------------
 // function getQuestionStatus(){
@@ -54,7 +49,7 @@ var is_mcq;
 //         url: `/quiz-portal/gamblingMaths/gqs`,
 //         data: {
 //         },
-        
+
 //         success: function(data){
 //             var buttons = document.querySelectorAll(".question-wrapper .questions-container div");
 //             // console.log(data);
@@ -63,7 +58,7 @@ var is_mcq;
 //                 // console.log("ds");
 //                 // console.log(data.attemptedQues[i]);
 //                 attempted(data.attemptedQues[i]);
-//             } 
+//             }
 //             for(var i=0; i< data.unattemptedQues.length ; i++){
 //                 //console.log("ds");
 //                 //console.log(data.attemptedQues[i]);
@@ -78,52 +73,42 @@ var is_mcq;
 //                 //console.log("ds");
 //                 //console.log(data.attemptedQues[i]);
 //                 attempted_review(data.reviewAttemptedQues[i]);
-//             } 
+//             }
 //             // console.log(data);
 //             attempted_unattempted();
 
 //         }
-//     });    
+//     });
 // }
 // getQuestionStatus();
 //--------------------------------------------------------------
 
+function setTimer(maxtime_min, secondsLeft) {
+  var timer = document.getElementById("timer");
+  var minutesLeft = maxtime_min;
+  if (secondsLeft < 10) timer.innerHTML = `${minutesLeft} : 0${secondsLeft}`;
+  else timer.innerHTML = `${minutesLeft} : ${secondsLeft}`;
+  var timer_interval = setInterval(function() {
+    if (secondsLeft == 0) {
+      minutesLeft -= 1;
+      secondsLeft = 60;
+    }
+    secondsLeft -= 1;
+    if (secondsLeft < 10) timer.innerHTML = `${minutesLeft} : 0${secondsLeft}`;
+    else timer.innerHTML = `${minutesLeft} : ${secondsLeft}`;
 
+    if (minutesLeft < 0 || minutesLeft > 30) {
+      timeout();
+    }
+  }, 1000);
 
-function setTimer(maxtime_min, secondsLeft){
-    var timer= document.getElementById("timer");
-    var minutesLeft = maxtime_min;
-    if(secondsLeft<10)
-    timer.innerHTML = `${minutesLeft} : 0${secondsLeft}`   
-    else
-    timer.innerHTML = `${minutesLeft} : ${secondsLeft}`;
-    var timer_interval = setInterval(function(){
-        if(secondsLeft == 0){
-            minutesLeft -= 1;
-            secondsLeft = 60;
-        }
-        secondsLeft-=1;
-        if(secondsLeft<10)
-        timer.innerHTML = `${minutesLeft} : 0${secondsLeft}`   
-        else
-        timer.innerHTML = `${minutesLeft} : ${secondsLeft}`;
-    
-        if (minutesLeft < 0 || minutesLeft > 30) {
-            timeout();
-        }
-    },1000);
-    
-    function timeout() {
-        clearInterval(timer_interval);
-        window.open("/quiz-portal/gamblingMaths/submitquiz/", "_self");
-     }
+  function timeout() {
+    clearInterval(timer_interval);
+    window.open("/quiz-portal/gamblingMaths/submitquiz/", "_self");
+  }
 }
 
-
-
 // ---------------------------------------------------
-
-
 
 // function questionDisplay(content){
 //     var newElement = document.createElement("div");
@@ -151,161 +136,157 @@ function setTimer(maxtime_min, secondsLeft){
 //     askMarks();
 // }
 
-function getQuestion(quesNo){
-    var pool=1;
-    switch(quesNo){
-        case 0,1:
-        pool = '1';
-        break;
-        case 2,3:
-        pool = "pool_2";
-        break;
-        case 4,5:
-        pool = "pool_3";
-        break;
-        case 6,7:
-        pool = "pool_4";
-        break;
-        case 8,9:
-        pool = "pool_5";
-        break;
-    }
-    var url = `/quiz-portal/gamblingMaths/get_question/${pool}`
-    console.log(url)
-    var data = $.ajax( {
-        type: 'GET',
-        url: `/quiz-portal/gamblingMaths/get_question/${pool}`,
-        data: {
-        },
-        success: function(data) {
-            if(data.mcq_flag){
-                is_mcq = true;
-                var obj = JSON.parse;
-                var question_view = document.querySelectorAll(".questionsView .question-text")[0];
-                if(data.image_url != 0){
-                    var quesImg = document.createElement("img");
-                    quesImg.setAttribute("src", data.image_url);
-                    quesImg.className = "quesImg";
-                    question_view.appendChild(quesImg);
-                    question_view.innerHTML += "<br><br>";
-                }
-                question_view.innerHTML += `${data.question}`;
-                var no_of_options = data.answers.length;
-                var form = document.querySelectorAll(".questionsView .form .radio_button")[0];
-                for(var i = 0; i< no_of_options;i++){
-                    var radioButton = document.createElement("input");
-                    radioButton.setAttribute("type","radio");
-                    radioButton.setAttribute("name","answer");
-                    // radioButton.setAttribute("onclick","buttonDisplay()");
-                    radioButton.setAttribute("key",`${data.keys[i]}`);
-                    // if(data.keys[i] == data.marked_answer){
-                    //     radioButton.setAttribute("checked", "checked");
-                    // }
-                    var radioHolder = document.createElement("div");
-                    radioHolder.append(radioButton);
-                    radioHolder.innerHTML+=`${data.answers[i]}`;
-                    form.appendChild(radioHolder);
-                }
-            }
-            else{
-                is_mcq = false;
-                var obj = JSON.parse;
-                var form = document.querySelectorAll(".questionsView .form .radio_button")[0];
-                var question_view = document.querySelectorAll(".questionsView .question-text")[0];
-                question_view.innerHTML = `${data.question}`;
-                var radioButton = document.createElement("input");
-                radioButton.setAttribute("type","text");
-                radioButton.setAttribute("name","answer");
-                // if(data.entered_answer != "NULL1234")
-                // radioButton.setAttribute("value", data.entered_answer);
-                var radioHolder = document.createElement("div");
-                radioHolder.append(radioButton);
-                form.appendChild(radioHolder);
-                var txtBox = document.querySelectorAll(".questionsView .form .radio_button .div ,input")[0];
-                // txtBox.addEventListener("input", buttonDisplay);
-            }
-            document.getElementById("user-question-header").innerHTML = "Question: " + (questionNo+1);
-            // buttonDisplay();
+function getQuestion(quesNo) {
+  var pool = 1;
+  switch (quesNo) {
+    case (0, 1):
+      pool = "1";
+      break;
+    case (2, 3):
+      pool = "pool_2";
+      break;
+    case (4, 5):
+      pool = "pool_3";
+      break;
+    case (6, 7):
+      pool = "pool_4";
+      break;
+    case (8, 9):
+      pool = "pool_5";
+      break;
+  }
+  var url = `/quiz-portal/gamblingMaths/get_question/${pool}`;
+  console.log(url);
+  var data = $.ajax({
+    type: "GET",
+    url: `/quiz-portal/gamblingMaths/get_question/${pool}`,
+    data: {},
+    success: function(data) {
+      if (data.mcq_flag) {
+        is_mcq = true;
+        var obj = JSON.parse;
+        var question_view = document.querySelectorAll(
+          ".questionsView .question-text"
+        )[0];
+        if (data.image_url != 0) {
+          var quesImg = document.createElement("img");
+          quesImg.setAttribute("src", data.image_url);
+          quesImg.className = "quesImg";
+          question_view.appendChild(quesImg);
+          question_view.innerHTML += "<br><br>";
         }
-    });
-     
+        question_view.innerHTML += `${data.question}`;
+        var no_of_options = data.answers.length;
+        var form = document.querySelectorAll(
+          ".questionsView .form .radio_button"
+        )[0];
+        for (var i = 0; i < no_of_options; i++) {
+          var radioButton = document.createElement("input");
+          radioButton.setAttribute("type", "radio");
+          radioButton.setAttribute("name", "answer");
+          // radioButton.setAttribute("onclick","buttonDisplay()");
+          radioButton.setAttribute("key", `${data.keys[i]}`);
+          // if(data.keys[i] == data.marked_answer){
+          //     radioButton.setAttribute("checked", "checked");
+          // }
+          var radioHolder = document.createElement("div");
+          radioHolder.append(radioButton);
+          radioHolder.innerHTML += `${data.answers[i]}`;
+          form.appendChild(radioHolder);
+        }
+      } else {
+        is_mcq = false;
+        var obj = JSON.parse;
+        var form = document.querySelectorAll(
+          ".questionsView .form .radio_button"
+        )[0];
+        var question_view = document.querySelectorAll(
+          ".questionsView .question-text"
+        )[0];
+        question_view.innerHTML = `${data.question}`;
+        var radioButton = document.createElement("input");
+        radioButton.setAttribute("type", "text");
+        radioButton.setAttribute("name", "answer");
+        // if(data.entered_answer != "NULL1234")
+        // radioButton.setAttribute("value", data.entered_answer);
+        var radioHolder = document.createElement("div");
+        radioHolder.append(radioButton);
+        form.appendChild(radioHolder);
+        var txtBox = document.querySelectorAll(
+          ".questionsView .form .radio_button .div ,input"
+        )[0];
+        // txtBox.addEventListener("input", buttonDisplay);
+      }
+      document.getElementById("user-question-header").innerHTML =
+        "Question: " + (quesNo + 1);
+      // buttonDisplay();
+    }
+  });
 }
 
-
 window.addEventListener("keypress", function(e) {
-    if(e.key == "Enter")
-    e.preventDefault();
+  if (e.key == "Enter") e.preventDefault();
 });
-
 
 getQuestion(questionNo);
 
-
-
-function sendAnswer(quesNo,key){
-    if(is_mcq){
-        var data = $.ajax( {
-            type: 'POST',
-            url: `/quiz-portal/gamblingMaths/store_response/`,
-            data: {
-                "queskey" : quesNo,
-                "anskey" : key
-            },
-            success: function(data) {   
-            }
-        });
-    }
-    else{
-        var data = $.ajax( {
-            type: 'POST',
-            url: `/quiz-portal/gamblingMaths/store_response/`,
-            data: {
-                "queskey" : quesNo,
-                "answer" : key
-            },
-            success: function(data) {    
-            }
-        });
-    }
+function sendAnswer(quesNo, key) {
+  if (is_mcq) {
+    var data = $.ajax({
+      type: "POST",
+      url: `/quiz-portal/gamblingMaths/store_response/`,
+      data: {
+        queskey: quesNo,
+        anskey: key
+      },
+      success: function(data) {}
+    });
+  } else {
+    var data = $.ajax({
+      type: "POST",
+      url: `/quiz-portal/gamblingMaths/store_response/`,
+      data: {
+        queskey: quesNo,
+        answer: key
+      },
+      success: function(data) {}
+    });
+  }
 }
-
-
 
 var checkedKey;
-function SaveAndNext(){
-    var form = document.querySelectorAll(".questionsView .form .radio_button .div ,input");
-    var checked_radio;
-    if(is_mcq){
-        for(var i=0; i<form.length ;i++){
-            if(form[i].checked){
-                checked_radio =  form[i];
-                checkedKey = i;
-            }
-        }
-        var post_key = checked_radio.getAttribute("key");
+function SaveAndNext() {
+  var form = document.querySelectorAll(
+    ".questionsView .form .radio_button .div ,input"
+  );
+  var checked_radio;
+  if (is_mcq) {
+    for (var i = 0; i < form.length; i++) {
+      if (form[i].checked) {
+        checked_radio = form[i];
+        checkedKey = i;
+      }
     }
-    else{
-        var post_key = form[0].value;
-    }
-    return post_key;
+    var post_key = checked_radio.getAttribute("key");
+  } else {
+    var post_key = form[0].value;
+  }
+  return post_key;
 }
-
 
 var saveAndNext = document.querySelectorAll(".footer-buttons #save-next")[0];
 
-
-saveAndNext.addEventListener("click", function(){
-    var key = SaveAndNext();
-    if(key){
-        sendAnswer(questionNo , key);
-        sendAttempted(questionNo);
-    }
-    else {
-        sendUnattempted(questionNo);
-    }
-    doNext();
+saveAndNext.addEventListener("click", function() {
+  var key = SaveAndNext();
+  if (key) {
+    sendAnswer(questionNo, key);
+    // sendAttempted(questionNo);
+  }
+  //   else {
+  //     sendUnattempted(questionNo);
+  //   }
+  doNext();
 });
-
 
 // var saveAndReview = document.querySelectorAll(".footer-buttons #save-review")[0];
 // saveAndReview.addEventListener("click",function(){
@@ -316,7 +297,6 @@ saveAndNext.addEventListener("click", function(){
 //     doNext();
 //     });
 
-
 // var review = document.querySelectorAll(".footer-buttons #review")[0];
 // review.addEventListener("click",function(){
 //     sendReview(questionNo);
@@ -325,8 +305,8 @@ saveAndNext.addEventListener("click", function(){
 // });
 
 // function attempted(questionNo){
-    // var buttons = document.querySelectorAll(".question-wrapper .questions-container div");
-    // buttons[questionNo].className = "items attempted";
+// var buttons = document.querySelectorAll(".question-wrapper .questions-container div");
+// buttons[questionNo].className = "items attempted";
 //     sendAttempted(questionNo);
 // }
 
@@ -336,8 +316,8 @@ saveAndNext.addEventListener("click", function(){
 // }
 
 // function unattempted(questionNo){
-    // var buttons = document.querySelectorAll(".question-wrapper .questions-container div");
-    // buttons[questionNo].className = "items not-attempted";
+// var buttons = document.querySelectorAll(".question-wrapper .questions-container div");
+// buttons[questionNo].className = "items not-attempted";
 //     sendUnattempted(questionNo);
 // }
 
@@ -355,8 +335,8 @@ saveAndNext.addEventListener("click", function(){
 //             "queskey" : quesNo,
 //             "anskey" : key
 //         },
-//         success: function(data) {  
-//             console.log("sent");           
+//         success: function(data) {
+//             console.log("sent");
 //         }
 //     });
 // }
@@ -367,35 +347,31 @@ saveAndNext.addEventListener("click", function(){
 //         data: {
 //             "queskey" : quesNo
 //         },
-//         success: function(data) {             
+//         success: function(data) {
 //         }
 //     });
 // }
 
-
-function sendAttempted(quesNo){
-    var data = $.ajax( {
-        type: 'POST',
-        url: '/quiz-portal/gamblingMaths/ata/',
-        data: {
-            "queskey" : quesNo
-        },
-        success: function(data) {             
-        }       
-    });
-}
-function sendUnattempted(quesNo){
-    var data = $.ajax( {
-        type: 'POST',
-        url: '/quiz-portal/gamblingMaths/atna/',
-        data: {
-            "queskey" : quesNo
-        },
-        success: function(data) {             
-        }
-    });
-}
-
+// function sendAttempted(quesNo) {
+//   var data = $.ajax({
+//     type: "POST",
+//     url: "/quiz-portal/gamblingMaths/ata/",
+//     data: {
+//       queskey: quesNo
+//     },
+//     success: function(data) {}
+//   });
+// }
+// function sendUnattempted(quesNo) {
+//   var data = $.ajax({
+//     type: "POST",
+//     url: "/quiz-portal/gamblingMaths/atna/",
+//     data: {
+//       queskey: quesNo
+//     },
+//     success: function(data) {}
+//   });
+// }
 
 // var next = document.querySelectorAll(".footer-buttons #next")[0];
 // next.addEventListener("click", nextques);
@@ -407,21 +383,18 @@ function sendUnattempted(quesNo){
 //     doNext();
 // }
 
-
-
-function doNext(){
-    if(questionNo != numOfQuestions - 1){
-        questionNo++;
-    }else{
-        questionNo = 0;
-    }
-    document.getElementsByClassName("radio_button")[0].innerHTML="";
-    document.getElementsByClassName("question-text")[0].innerHTML="";
-    getQuestion(questionNo);
-    attempted_unattempted();
-    askMarks();
+function doNext() {
+  if (questionNo != numOfQuestions - 1) {
+    questionNo++;
+  } else {
+    questionNo = 0;
+  }
+  document.getElementsByClassName("radio_button")[0].innerHTML = "";
+  document.getElementsByClassName("question-text")[0].innerHTML = "";
+  getQuestion(questionNo);
+  //   attempted_unattempted();
+  askMarks();
 }
-
 
 // var prev = document.querySelectorAll(".footer-buttons #prev")[0];
 // prev.addEventListener("click", prevques);
@@ -439,9 +412,6 @@ function doNext(){
 //     document.getElementsByClassName("question-text")[0].innerHTML="";
 //     getQuestion(questionNo);
 // }
-
-
-
 
 // ------------------  Ham-menu handler  --------------------
 // const nav = document.querySelector(".question-wrapper");
@@ -463,7 +433,7 @@ function doNext(){
 //     ham.firstElementChild.style.transform = "rotate(45deg)";
 //     ham.lastElementChild.style.transform = "rotate(-45deg)";
 //     ham.firstElementChild.nextElementSibling.style.opacity = "0";
-    
+
 // }
 
 // function closeNav() {
@@ -477,10 +447,7 @@ function doNext(){
 //     ham.firstElementChild.nextElementSibling.style.opacity = "1";
 // }
 // --------------------------------------------------------
-// hard refresh 
-
-
-
+// hard refresh
 
 // function buttonDisplay(){
 //     var prevBtn = document.getElementById("prev");
@@ -553,25 +520,23 @@ function doNext(){
 //         prevBtn.style.display = "flex";
 // }
 
-
-
 var clear = document.querySelectorAll(".footer-buttons #clear")[0];
 clear.addEventListener("click", clear_response);
-function clear_response(){
-    var form = document.querySelectorAll(".questionsView .form .radio_button .div ,input");
-    if(is_mcq){
-        for(var i=0; i<form.length ;i++){
-            form[i].checked = false;
-        }
+function clear_response() {
+  var form = document.querySelectorAll(
+    ".questionsView .form .radio_button .div ,input"
+  );
+  if (is_mcq) {
+    for (var i = 0; i < form.length; i++) {
+      form[i].checked = false;
     }
-    else{
-        form[0].value = "";
-    }
-    // unattempted(questionNo);
-    // buttonDisplay();
-    // sendClearResponse(questionNo);
+  } else {
+    form[0].value = "";
+  }
+  // unattempted(questionNo);
+  // buttonDisplay();
+  // sendClearResponse(questionNo);
 }
-
 
 // function sendClearResponse(quesNo){
 //     var data = $.ajax( {
@@ -580,59 +545,55 @@ function clear_response(){
 //         data: {
 //             "queskey" : quesNo
 //         },
-//         success: function(data) {             
+//         success: function(data) {
 //         }
 //     });
 // }
 
-function attempted_unattempted(){
-    var noAttempt = document.getElementById("attempted");
-    var noUnattempt = document.getElementById("unattempted");
-    var data = $.ajax( {
-        type: 'GET',
-        url: `/quiz-portal/gamblingMaths/gqs`,
-        data: {
-        },
-        
-        success: function(data){
-            var atmpt = data.attemptedQues.length + data.reviewAttemptedQues.length;
-            noAttempt.innerHTML = "ATTEMPTED: " + atmpt;
-            noUnattempt.innerHTML = "UNATTEMPTED: " + (numOfQuestions - atmpt);
-        }
-    });
-}
-attempted_unattempted();
+// function attempted_unattempted() {
+//   var noAttempt = document.getElementById("attempted");
+//   var noUnattempt = document.getElementById("unattempted");
+//   var data = $.ajax({
+//     type: "GET",
+//     url: `/quiz-portal/gamblingMaths/gqs`,
+//     data: {},
 
+//     success: function(data) {
+//       var atmpt = data.attemptedQues.length + data.reviewAttemptedQues.length;
+//       noAttempt.innerHTML = "ATTEMPTED: " + atmpt;
+//       noUnattempt.innerHTML = "UNATTEMPTED: " + (numOfQuestions - atmpt);
+//     }
+//   });
+// }
+// attempted_unattempted();
 
-function submitQuiz(){
-    var submitConfirmation = confirm("Do you really want to submit!");
-    if(submitConfirmation == true)
+function submitQuiz() {
+  var submitConfirmation = confirm("Do you really want to submit!");
+  if (submitConfirmation == true)
     window.open("/quiz-portal/gamblingMaths/submitquiz", "_self");
 }
 
-
 function askMarks() {
-    var quesArea = document.getElementsByClassName("questionsView")[0];
-    var marksEnqArea = document.getElementsByClassName("get-marks")[0];
-    var buttonArea = document.getElementsByClassName("user-footer")[0];
-    var quesPalette = document.getElementsByClassName("questions-container")[0];
-    quesArea.style.display = "none";
-    marksEnqArea.style.display = "block";
-    buttonArea.style.display = "none";
-    quesPalette.style.display = "none";
+  var quesArea = document.getElementsByClassName("questionsView")[0];
+  var marksEnqArea = document.getElementsByClassName("get-marks")[0];
+  var buttonArea = document.getElementsByClassName("user-footer")[0];
+  var quesPalette = document.getElementsByClassName("questions-container")[0];
+  quesArea.style.display = "none";
+  marksEnqArea.style.display = "block";
+  buttonArea.style.display = "none";
+  quesPalette.style.display = "none";
 }
 
 function sendMarks() {
-    var quesNo = questionNo;
-    var marks = document.get_marks.marks.value;
-    var data = $.ajax( {
-        type: 'POST',
-        url: '/quiz-portal/gamblingMaths/set_uncertainty/',
-        data: {
-            "uncertainty" : marks
-        },
-        success: function(data) {             
-        }
+  var marks = document.get_marks.marks.value;
+  if (marks >= 5 && marks <= 95) {
+    var data = $.ajax({
+      type: "POST",
+      url: "/quiz-portal/gamblingMaths/set_uncertainty/",
+      data: {
+        uncertainty: marks
+      },
+      success: function(data) {}
     });
     var quesArea = document.getElementsByClassName("questionsView")[0];
     var marksEnqArea = document.getElementsByClassName("get-marks")[0];
@@ -641,4 +602,5 @@ function sendMarks() {
     marksEnqArea.style.display = "none";
     buttonArea.style.display = "flex";
     quesPalette.style.display = "flex";
+  } else alert("Inavlid input");
 }
