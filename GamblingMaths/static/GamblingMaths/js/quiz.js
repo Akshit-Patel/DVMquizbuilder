@@ -150,34 +150,28 @@ function setTimer(maxtime_min, secondsLeft){
 //     getQuestion(quesNo);
 //     askMarks();
 // }
-
+var ques_key;
+var pool;
 function getQuestion(quesNo){
-    var pool=1;
-    switch(quesNo){
-        case 0,1:
-        pool = '1';
-        break;
-        case 2,3:
-        pool = "pool_2";
-        break;
-        case 4,5:
-        pool = "pool_3";
-        break;
-        case 6,7:
-        pool = "pool_4";
-        break;
-        case 8,9:
-        pool = "pool_5";
-        break;
-    }
-    var url = `/quiz-portal/gamblingMaths/get_question/${pool}`
-    console.log(url)
+    
+    if(quesNo == 0 || quesNo == 1)
+    pool=1;
+    else if(quesNo == 2 || quesNo == 3)
+    pool=2;
+    else if(quesNo == 4 || quesNo == 5)
+    pool=3;
+    else if(quesNo == 6 || quesNo == 7)
+    pool=4;
+    else if(quesNo == 8 || quesNo == 9)
+    pool=5;
+
     var data = $.ajax( {
         type: 'GET',
         url: `/quiz-portal/gamblingMaths/get_question/${pool}`,
         data: {
         },
         success: function(data) {
+            ques_key = data.ques_key;
             if(data.mcq_flag){
                 is_mcq = true;
                 var obj = JSON.parse;
@@ -242,14 +236,15 @@ getQuestion(questionNo);
 
 
 
-function sendAnswer(quesNo,key){
+function sendAnswer(quesNo,key,poolNo){
     if(is_mcq){
         var data = $.ajax( {
             type: 'POST',
             url: `/quiz-portal/gamblingMaths/store_response/`,
             data: {
                 "queskey" : quesNo,
-                "anskey" : key
+                "anskey" : key,
+                "pool" : poolNo
             },
             success: function(data) {   
             }
@@ -261,12 +256,14 @@ function sendAnswer(quesNo,key){
             url: `/quiz-portal/gamblingMaths/store_response/`,
             data: {
                 "queskey" : quesNo,
-                "answer" : key
+                "answer" : key,
+                "pool" : poolNo
             },
             success: function(data) {    
             }
         });
     }
+
 }
 
 
@@ -297,7 +294,7 @@ var saveAndNext = document.querySelectorAll(".footer-buttons #save-next")[0];
 saveAndNext.addEventListener("click", function(){
     var key = SaveAndNext();
     if(key){
-        sendAnswer(questionNo , key);
+        sendAnswer(ques_key , key, pool);
         sendAttempted(questionNo);
     }
     else {
@@ -415,6 +412,7 @@ function doNext(){
     }else{
         questionNo = 0;
     }
+    console.log(questionNo);
     document.getElementsByClassName("radio_button")[0].innerHTML="";
     document.getElementsByClassName("question-text")[0].innerHTML="";
     getQuestion(questionNo);

@@ -7,7 +7,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("instructions/", views.instructions, name="instructions"),
     # path("get_no_of_questions/", views.get_no_of_questions, name="get_no_of_questions"),
-    path("get_question/<int:queskey>", views.get_question, name="get_question"),
+    path("get_question/<str:pool>", views.get_question, name="get_question"),
     path("get_score/", views.get_score, name="get_score"),
     path("get_time_remaining/", views.get_time_remaining, name="get_time_remaining"),
     path("leaderboard/", views.leaderboard, name="leaderboard"),
@@ -26,4 +26,6 @@ urlpatterns = [
     path('memcreate/', views.create_member, name="create_member"),
     path('logout/', views.sign_out, name="logout"),
     path('get_result/', views.get_result, name="get_result"),
+    path('set_uncertainty/', views.set_uncertainty, name="set_uncertainty"),
+    path('generate_questions/', views.generate_questions, name='generate_questions'),
 ]
