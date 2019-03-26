@@ -151,10 +151,30 @@ function setTimer(maxtime_min, secondsLeft){
 //     askMarks();
 // }
 
-function getQuestion(quesNo){   
+function getQuestion(quesNo){
+    var pool=1;
+    switch(quesNo){
+        case 0,1:
+        pool = '1';
+        break;
+        case 2,3:
+        pool = "pool_2";
+        break;
+        case 4,5:
+        pool = "pool_3";
+        break;
+        case 6,7:
+        pool = "pool_4";
+        break;
+        case 8,9:
+        pool = "pool_5";
+        break;
+    }
+    var url = `/quiz-portal/gamblingMaths/get_question/${pool}`
+    console.log(url)
     var data = $.ajax( {
         type: 'GET',
-        url: `/quiz-portal/gamblingMaths/get_question/${quesNo}`,
+        url: `/quiz-portal/gamblingMaths/get_question/${pool}`,
         data: {
         },
         success: function(data) {
@@ -607,10 +627,9 @@ function sendMarks() {
     var marks = document.get_marks.marks.value;
     var data = $.ajax( {
         type: 'POST',
-        url: '/quiz-portal/gamblingMaths/store_marks/',
+        url: '/quiz-portal/gamblingMaths/set_uncertainty/',
         data: {
-            "queskey" : quesNo,
-            "marks" : marks
+            "uncertainty" : marks
         },
         success: function(data) {             
         }
