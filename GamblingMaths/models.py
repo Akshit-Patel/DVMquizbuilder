@@ -10,7 +10,7 @@ class Member(models.Model):
 
     user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE, related_name='GamblingMathsMember')
     name = models.CharField(max_length=50)
-    score = models.IntegerField(default=0)
+    score = models.IntegerField(default=100)
     
     start_time = models.DateTimeField(null=True)
     uncertainty = models.IntegerField(null=True)
