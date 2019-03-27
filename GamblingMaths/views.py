@@ -103,7 +103,7 @@ def add_team_member(request):
         # Only set the new values if they don't already exist.
         for member in Member.objects.all():
             if member.user.email == team_member_email or member.team_member_email == team_member_email:
-                return HttpResponse("This email already exists.")
+                return JsonResponse({"message":"Email address already registered."}, status=204)
         
         current_member.team_member_email = team_member_email
         current_member.team_member_name = team_member_name
@@ -112,10 +112,8 @@ def add_team_member(request):
 
         current_member.save()
 
-        return redirect('/'+app_name+"/instructions/")
+        return JsonResponse({"message":"Email registered"}, status=200)
 
-    else:
-        return render(request, 'gamblingMaths/add_members.html')
 
 @login_required
 def submit_if_eliminated(request):
@@ -163,13 +161,9 @@ def store_response(request):
     if request.method == 'POST':
         queskey = request.POST.get("queskey")
         pool = int(request.POST.get("pool"))
-        print(queskey)
-        print(pool)
         question = Question.objects.get(questionkey=queskey, pool=pool)
         member_questions = question.related_mq_object.all()
-        print(member_questions) 
         current_member_question = member_questions.get(member=current_member)
-        print(current_member_question)
         uncertainty = current_member.uncertainty
         score = current_member.score
 
@@ -184,22 +178,23 @@ def store_response(request):
             # except:
             a = Response(member=current_member, question=question, answer_mcq=answer, answer_text='')
             a.save()
-            flag = ((uncertainty * score)/100)//1
-            quotient = int((uncertainty*score)/100)
+            change = (uncertainty * score)/100
+            print(change)
+            print(change%1)
             if answer.is_correct:
-                if flag:
-                    current_member.score = score + quotient + 1 #x//1 is floor function for x
-                else:
-                    current_member.score = score + quotient
+                if change%1:
+                    change=int(change)+1
+                current_member.score += int(change)
+                current_member.correct_answers += 1
             else:
-                if flag:
-                    current_member.score = score - quotient + 1
-                else:
-                    current_member.score = score - quotient
-            current_member.save()           
+                intermediate = current_member.score - int(change)
+                if intermediate%1:
+                    intermediate  = int(intermediate)+1
+                current_member.score = intermediate
+            current_member.save()
         except:
             answer = request.POST.get("answer")
-            print(answer)
+            answer = answer.lower()
             # try:
             #     a = Response.objects.filter(member=current_member, question=question)[0]
             #     a.answer_text = answer
@@ -207,28 +202,27 @@ def store_response(request):
             # except:
             a = Response(member=current_member, question=question, answer_text=answer)
             a.save()
-            flag = ((uncertainty * score)/100)//1
-            quotient = int((uncertainty*score)/100)
-            if answer == question.answer:
-                if flag:
-                    current_member.score = score + quotient + 1 #x//1 is floor function for x
-                else:
-                    current_member.score = score + quotient
+            change = (uncertainty * score)/100
+            if answer == current_question.answer.lower():
+                if change%1:
+                    change=int(change)+1
+                current_member.score += change
+                current_member.correct_answers += 1
             else:
-                if flag:
-                    current_member.score = score - quotient + 1
-                else:
-                    current_member.score = score - quotient
-            current_member.save()
+                intermediate = current_member.score - change
+                if intermediate%1:
+                    intermediate  = int(intermediate)+1
+                current_member.score = intermediate
+            current_member.save()   
 
         current_member_question.delete() #Just to make sure the user cannot go back to a question he's skipped/answered, no matter what.
         submit_if_eliminated(request) #eliminate the user if his score becomes zero.
-    print(current_member.score)
     return HttpResponse("Answer stored")
 
 
 def get_leaderboard(request):
     current_member = Member.objects.get(user=request.user)
+     
     if current_member.submitted:
         leaderboard = Member.objects.order_by('-score')
         ranklist=[]
@@ -239,7 +233,7 @@ def get_leaderboard(request):
                 scorelist.append(member.score)
         data = {
             "ranklist":ranklist,
-            "scorelist":scorelist
+            "scorelist":scorelist,
         }
         return JsonResponse(data)
     else:
@@ -253,28 +247,29 @@ def submit(request):
     if current_member.submitted == False:
         current_member.submitted = True
         current_member.save()
-        try:
-            full_response = current_member.full_response.all()
-            for response in full_response:
-                question = response.question
-                try:
-                    if response.answer_mcq.is_correct:
-                        current_member.score = current_member.score + question.score_increment
-                        current_member.answered_correctly.add(response.question)
-                    else:
-                        current_member.score = current_member.score - question.score_decrement
-                        current_member.answered_incorrectly.add(response.question)
-                except:
-                    if response.answer_text == question.answer:
-                        current_member.score = current_member.score + question.score_increment
-                        current_member.answered_correctly.add(response.question)
-                    else:
-                        current_member.score = current_member.score - question.score_decrement
-                        current_member.answered_incorrectly.add(response.question)
-                current_member.save()
-            return redirect('/'+app_name+'/submitquiz/')
-        except:
-            return redirect('/'+app_name+'/leaderboard/')
+        return redirect('/'+app_name+'/leaderboard/')
+        # try:
+        #     full_response = current_member.full_response.all()
+        #     for response in full_response:
+        #         question = response.question
+        #         try:
+        #             if response.answer_mcq.is_correct:
+        #                 current_member.score = current_member.score + question.score_increment
+        #                 current_member.answered_correctly.add(response.question)
+        #             else:
+        #                 current_member.score = current_member.score - question.score_decrement
+        #                 current_member.answered_incorrectly.add(response.question)
+        #         except:
+        #             if response.answer_text == question.answer:
+        #                 current_member.score = current_member.score + question.score_increment
+        #                 current_member.answered_correctly.add(response.question)
+        #             else:
+        #                 current_member.score = current_member.score - question.score_decrement
+        #                 current_member.answered_incorrectly.add(response.question)
+        #         current_member.save()
+        #     return redirect('/'+app_name+'/submitquiz/')
+        # except:
+        #     return redirect('/'+app_name+'/leaderboard/')
     else:
         return redirect('/'+app_name+'/leaderboard/')
 
@@ -285,9 +280,8 @@ def get_result(request):
     current_member = Member.objects.get(user=request.user)
     if current_member.submitted:
         name = current_member.name
-        correct = current_member.answered_correctly.all().count()
-        incorrect = current_member.answered_incorrectly.all().count()
-        unattempted = Question.objects.all().count() - correct - incorrect
+        correct = current_member.correct_answers
+        incorrect = 10 - correct
         score = current_member.score
 
         leaderboard = Member.objects.filter(submitted = True).order_by('-score')
@@ -302,7 +296,6 @@ def get_result(request):
             'name':name,
             'correct':correct,
             'incorrect':incorrect,
-            'unattempted':unattempted,
             'rank':rank,
             'score':score
         }
@@ -321,10 +314,10 @@ def get_score(request):
     else:
         return HttpResponse("The user needs to submit first")
 
+@csrf_exempt
 @login_required(login_url='/sign_in')
 def get_question(request, pool):
     current_member = Member.objects.get(user=request.user)
-
     question_data = MemberQuestion.objects.filter(pool=int(pool), member = current_member)[0] #Choose a question using the MemberQuestion model.
     current_question = question_data.question
     
@@ -381,11 +374,11 @@ def get_time_remaining(request):
 
     else:
         start_time = current_member.start_time
-        quiz_time = datetime.timedelta(minutes = 10)
+        quiz_time = datetime.timedelta(minutes = 100)
         end_time = start_time + quiz_time
         time_remaining = end_time - datetime.datetime.now(timezone.utc) # A datetime.timedelta object
         
-        if time_remaining.seconds > 600 or time_remaining.seconds < 0:
+        if time_remaining.seconds > 6000 or time_remaining.seconds < 0:
             
             data = {
                 "message": "Time is out of range"
@@ -401,7 +394,7 @@ def get_time_remaining(request):
 
 @csrf_exempt
 def get_ques_attempted(request):
-    current_member = Member.objects.filter(user = request.user)
+    current_member = Member.objects.get(user=request.user)
     ques_remaining = MemberQuestion.objects.filter(member = current_member).count()
     ques_attempted = 10 - ques_remaining
 
@@ -410,8 +403,6 @@ def get_ques_attempted(request):
     }
 
     return JsonResponse(data)
-
-
 
 
 # @staff_member_required

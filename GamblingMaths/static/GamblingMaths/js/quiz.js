@@ -97,7 +97,7 @@ function setTimer(maxtime_min, secondsLeft) {
     if (secondsLeft < 10) timer.innerHTML = `${minutesLeft} : 0${secondsLeft}`;
     else timer.innerHTML = `${minutesLeft} : ${secondsLeft}`;
 
-    if (minutesLeft < 0 || minutesLeft > 40) {
+    if (minutesLeft < 0 || minutesLeft > 100) {
       timeout();
     }
   }, 1000);
@@ -135,6 +135,20 @@ function setTimer(maxtime_min, secondsLeft) {
 //     getQuestion(quesNo);
 //     askMarks();
 // }
+getCurrentQuestionNo();
+function getCurrentQuestionNo() {
+  var data = $.ajax({
+    type: "GET",
+    url: `/quiz-portal/gamblingMaths/get_ques_attempted`,
+    data: {},
+    success: function(data) {
+      questionNo = data.ques_attempted;
+      getQuestion(questionNo);
+      console.log("run");
+    }
+  });
+}
+
 var ques_key;
 var pool;
 function getQuestion(quesNo) {
@@ -149,6 +163,7 @@ function getQuestion(quesNo) {
     url: `/quiz-portal/gamblingMaths/get_question/${pool}`,
     data: {},
     success: function(data) {
+      // console.log(data);
       ques_key = data.ques_key;
       console.log(ques_key);
       if (data.mcq_flag) {
@@ -218,7 +233,7 @@ window.addEventListener("keypress", function(e) {
 });
 
 
-getQuestion(questionNo);
+// getQuestion(questionNo);
 
 
 function sendAnswer(quesNo, key, poolNo) {
@@ -232,6 +247,9 @@ function sendAnswer(quesNo, key, poolNo) {
         "pool" : poolNo
       },
       success: function(data) {
+        console.log("Response: ", data);
+        doNext();
+        getQuestion(questionNo);
       }
     });
   } else {
@@ -244,6 +262,9 @@ function sendAnswer(quesNo, key, poolNo) {
         "pool": poolNo
       },
       success: function(data) {
+        console.log("Response: ", data);
+        doNext();
+        getQuestion(questionNo);
       }
     });
   }
@@ -276,18 +297,22 @@ function SaveAndNext() {
 
 var saveAndNext = document.querySelectorAll(".footer-buttons #save-next")[0];
 
-saveAndNext.addEventListener("click", function() {
+saveAndNext.addEventListener("click", doSave_next);
+function doSave_next() {
   var key = SaveAndNext();
   if (attemptCheck) {
     sendAnswer(ques_key, key, pool);
     attemptCheck = false;
     // sendAttempted(questionNo);
   }
+  else {
+    alert("You need to attempt the question");
+  }
   // else {
   //     sendUnattempted(questionNo);
   // }
-  doNext();
-});
+  // doNext();
+}
 
 // var saveAndReview = document.querySelectorAll(".footer-buttons #save-review")[0];
 // saveAndReview.addEventListener("click",function(){
@@ -387,12 +412,14 @@ saveAndNext.addEventListener("click", function() {
 function doNext() {
   if (questionNo != numOfQuestions - 1) {
     questionNo++;
+    if(questionNo == numOfQuestions -1)
+    document.getElementById("save-next").innerHTML = "Submit";
   } else {
     submitQuiz();
   }
   document.getElementsByClassName("radio_button")[0].innerHTML = "";
   document.getElementsByClassName("question-text")[0].innerHTML = "";
-  getQuestion(questionNo);
+  // getQuestion(questionNo);
 //   attempted_unattempted();
   askMarks();
 }
@@ -569,8 +596,7 @@ function clear_response() {
 // attempted_unattempted();
 
 function submitQuiz() {
-  var submitConfirmation = confirm("Do you really want to submit!");
-  if (submitConfirmation == true)
+    doSave_next();
     window.open("/quiz-portal/gamblingMaths/submitquiz", "_self");
 }
 
