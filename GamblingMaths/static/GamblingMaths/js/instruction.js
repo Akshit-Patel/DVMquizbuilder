@@ -1,11 +1,3 @@
-var data = $.ajax( {
-    type: 'POST',
-    url: `/quiz-portal/gamblingMaths/generate_questions/`,
-    data: {
-    },
-    success: function(data) {  
-    }
-});
 
 
 function startTimer(){
