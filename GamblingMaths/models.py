@@ -62,7 +62,8 @@ class Question(models.Model):
     is_mcq = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.content
+        return '#{0} Question {1}: {2}'.format(self.pool, self.questionkey+1, self.content)
+
 
 class MemberQuestion(models.Model): #Which questions are gonna be displayed to a particular member
     pool = models.IntegerField(default=1)
