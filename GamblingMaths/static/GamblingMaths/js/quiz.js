@@ -97,7 +97,7 @@ function setTimer(maxtime_min, secondsLeft) {
     if (secondsLeft < 10) timer.innerHTML = `${minutesLeft} : 0${secondsLeft}`;
     else timer.innerHTML = `${minutesLeft} : ${secondsLeft}`;
 
-    if (minutesLeft < 0 || minutesLeft > 30) {
+    if (minutesLeft < 0 || minutesLeft > 40) {
       timeout();
     }
   }, 1000);
@@ -150,6 +150,7 @@ function getQuestion(quesNo) {
     data: {},
     success: function(data) {
       ques_key = data.ques_key;
+      console.log(ques_key);
       if (data.mcq_flag) {
         is_mcq = true;
         var obj = JSON.parse;
@@ -216,7 +217,9 @@ window.addEventListener("keypress", function(e) {
   if (e.key == "Enter") e.preventDefault();
 });
 
+
 getQuestion(questionNo);
+
 
 function sendAnswer(quesNo, key, poolNo) {
   if (is_mcq) {
@@ -224,41 +227,48 @@ function sendAnswer(quesNo, key, poolNo) {
       type: "POST",
       url: `/quiz-portal/gamblingMaths/store_response/`,
       data: {
-        queskey: quesNo,
-        anskey: key,
-        pool: poolNo
+        "queskey" : quesNo,
+        "anskey" : key,
+        "pool" : poolNo
       },
-      success: function(data) {}
+      success: function(data) {
+      }
     });
   } else {
     var data = $.ajax({
       type: "POST",
       url: `/quiz-portal/gamblingMaths/store_response/`,
       data: {
-        queskey: quesNo,
-        answer: key,
-        pool: poolNo
+        "queskey": quesNo,
+        "answer": key,
+        "pool": poolNo
       },
-      success: function(data) {}
+      success: function(data) {
+      }
     });
   }
 }
 
-var checkedKey;
+
+var attemptCheck = false;
 function SaveAndNext() {
   var form = document.querySelectorAll(
     ".questionsView .form .radio_button .div ,input"
   );
+  var checkedKey;
   var checked_radio;
   if (is_mcq) {
     for (var i = 0; i < form.length; i++) {
       if (form[i].checked) {
         checked_radio = form[i];
         checkedKey = i;
+        attemptCheck = true;
       }
     }
+    if(attemptCheck)
     var post_key = checked_radio.getAttribute("key");
-  } else {
+  }
+  else {
     var post_key = form[0].value;
   }
   return post_key;
@@ -268,8 +278,9 @@ var saveAndNext = document.querySelectorAll(".footer-buttons #save-next")[0];
 
 saveAndNext.addEventListener("click", function() {
   var key = SaveAndNext();
-  if (key) {
+  if (attemptCheck) {
     sendAnswer(ques_key, key, pool);
+    attemptCheck = false;
     // sendAttempted(questionNo);
   }
   // else {
@@ -377,13 +388,12 @@ function doNext() {
   if (questionNo != numOfQuestions - 1) {
     questionNo++;
   } else {
-    questionNo = 0;
+    submitQuiz();
   }
-  console.log(questionNo);
   document.getElementsByClassName("radio_button")[0].innerHTML = "";
   document.getElementsByClassName("question-text")[0].innerHTML = "";
   getQuestion(questionNo);
-  attempted_unattempted();
+//   attempted_unattempted();
   askMarks();
 }
 
@@ -568,23 +578,22 @@ function askMarks() {
   var quesArea = document.getElementsByClassName("questionsView")[0];
   var marksEnqArea = document.getElementsByClassName("get-marks")[0];
   var buttonArea = document.getElementsByClassName("user-footer")[0];
-  var quesPalette = document.getElementsByClassName("questions-container")[0];
   quesArea.style.display = "none";
   marksEnqArea.style.display = "block";
   buttonArea.style.display = "none";
-  quesPalette.style.display = "none";
 }
 
 function sendMarks() {
   var marks = document.get_marks.marks.value;
-  if (marks >= 5 && marks <= 95) {
+  if (marks >= 10 && marks <= 90) {
     var data = $.ajax({
       type: "POST",
       url: "/quiz-portal/gamblingMaths/set_uncertainty/",
       data: {
-        uncertainty: marks
+        "uncertainty": marks
       },
-      success: function(data) {}
+      success: function(data) {
+      }
     });
     var quesArea = document.getElementsByClassName("questionsView")[0];
     var marksEnqArea = document.getElementsByClassName("get-marks")[0];
@@ -592,6 +601,5 @@ function sendMarks() {
     quesArea.style.display = "block";
     marksEnqArea.style.display = "none";
     buttonArea.style.display = "flex";
-    quesPalette.style.display = "flex";
-  } else alert("Inavlid input");
+  } else alert("Inavlid input! Please Eneter a number between 10 to 90");
 }

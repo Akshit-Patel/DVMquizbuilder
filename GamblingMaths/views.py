@@ -184,10 +184,18 @@ def store_response(request):
             # except:
             a = Response(member=current_member, question=question, answer_mcq=answer, answer_text='')
             a.save()
+            flag = ((uncertainty * score)/100)//1
+            quotient = int((uncertainty*score)/100)
             if answer.is_correct:
-                current_member.score = (score + (uncertainty*score)/100)//1 + 1
+                if flag:
+                    current_member.score = score + quotient + 1 #x//1 is floor function for x
+                else:
+                    current_member.score = score + quotient
             else:
-                current_member.score = (score - (uncertainty*score)/100)//1 + 1 
+                if flag:
+                    current_member.score = score - quotient + 1
+                else:
+                    current_member.score = score - quotient
             current_member.save()           
         except:
             answer = request.POST.get("answer")
@@ -198,11 +206,19 @@ def store_response(request):
             #     a.save()
             # except:
             a = Response(member=current_member, question=question, answer_text=answer)
-            a.save() 
+            a.save()
+            flag = ((uncertainty * score)/100)//1
+            quotient = int((uncertainty*score)/100)
             if answer == question.answer:
-                current_member.score = (score + (uncertainty*score)/100)//1 + 1  #x//1 is floor function for x
+                if flag:
+                    current_member.score = score + quotient + 1 #x//1 is floor function for x
+                else:
+                    current_member.score = score + quotient
             else:
-                current_member.score = (score - (uncertainty*score)/100)//1 + 1
+                if flag:
+                    current_member.score = score - quotient + 1
+                else:
+                    current_member.score = score - quotient
             current_member.save()
 
         current_member_question.delete() #Just to make sure the user cannot go back to a question he's skipped/answered, no matter what.
@@ -311,9 +327,6 @@ def get_question(request, pool):
 
     question_data = MemberQuestion.objects.filter(pool=int(pool), member = current_member)[0] #Choose a question using the MemberQuestion model.
     current_question = question_data.question
-
-    marked_key = 69
-    entered_answer = "NULL1234"
     
     if current_question.is_image:
         base = settings.MEDIA_ROOT #Dunno why this is here. Not removing this.
@@ -368,11 +381,11 @@ def get_time_remaining(request):
 
     else:
         start_time = current_member.start_time
-        quiz_time = datetime.timedelta(minutes = 30)
+        quiz_time = datetime.timedelta(minutes = 10)
         end_time = start_time + quiz_time
         time_remaining = end_time - datetime.datetime.now(timezone.utc) # A datetime.timedelta object
         
-        if time_remaining.seconds > 1800 or time_remaining.seconds < 0:
+        if time_remaining.seconds > 600 or time_remaining.seconds < 0:
             
             data = {
                 "message": "Time is out of range"
@@ -384,6 +397,20 @@ def get_time_remaining(request):
         }
 
         return JsonResponse(data)
+
+
+@csrf_exempt
+def get_ques_attempted(request):
+    current_member = Member.objects.filter(user = request.user)
+    ques_remaining = MemberQuestion.objects.filter(member = current_member).count()
+    ques_attempted = 10 - ques_remaining
+
+    data = {
+        "ques_attempted":ques_attempted,
+    }
+
+    return JsonResponse(data)
+
 
 
 
