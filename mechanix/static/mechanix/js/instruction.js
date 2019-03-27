@@ -12,3 +12,17 @@ function startTimer(){
 function memberForm() {
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSdisvV9C_KCfjI0JFacdrst0qwTrlEGs_U948eSn2DA4FQxvg/viewform?vc=0&c=0&w=1")
 }
+
+
+function send(){
+    alert('hello')
+    var data = $.ajax( {
+        type: 'GET',
+        url: `/quiz-portal/mechanix/hello/`,
+        data: { 'url':'/quiz-portal/mechanix/memcreate'
+        },
+        success: function(data) {  
+        }
+    
+    });
+}

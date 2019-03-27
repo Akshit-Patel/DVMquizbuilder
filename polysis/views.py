@@ -36,7 +36,7 @@ def index(request):
 def sign_in(request):
     settings.LOGIN_REDIRECT_URL = '/quiz-portal/polysis/memcreate'
     if request.user.is_anonymous:
-        return render(request, 'polysis/sign_in.html')
+        return render(request, 'polysis/sign_in.html', {'url':'/quiz-portal/polysis/memcreate'})
     else:
         return redirect('/'+app_name+'/')
 
@@ -531,3 +531,7 @@ def add_question(request):
     #                 ans_list = []
     #                 ans_list.append("2")
     #                 answer = response.answer_text
+
+def hello(request):
+    settings.LOGIN_REDIRECT_URL = request.GET['url']
+    return HttpResponse('hello')

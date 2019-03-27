@@ -41,10 +41,15 @@
         }
     </style>
 </head>
+<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+crossorigin="anonymous"></script>
 <body>
     <h1> Welcome </h1>
     <div class="login">
-        <a class="socialaccount_provider google" title="Google" href="/quiz-portal/accounts/google/login/?process=login">Login with Google</a><br>
+        <a class="socialaccount_provider google" title="Google" href="/quiz-portal/accounts/google/login/?process=login" onclick="send()">Login with Google</a><br>
     </div>
+
+<script type="text/javascript" src="{% static 'mechanix/js/instruction.js' %}"></script>
+
 </body>
 </html>

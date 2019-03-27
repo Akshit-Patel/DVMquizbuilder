@@ -531,3 +531,8 @@ def add_question(request):
     #                 ans_list = []
     #                 ans_list.append("2")
     #                 answer = response.answer_text
+
+
+def hello(request):
+    settings.LOGIN_REDIRECT_URL = request.GET['url']
+    return HttpResponse('hello')
