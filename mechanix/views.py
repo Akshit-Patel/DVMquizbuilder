@@ -296,9 +296,9 @@ def submit(request):
                 current_member.save()
             return redirect('/'+app_name+'/submitquiz/')
         except:
-            return redirect('/'+app_name+'/leaderboard/')
+            return render(request, 'mechanix/submitted.html')
     else:
-        return redirect('/'+app_name+'/leaderboard/')
+        return render(request, 'mechanix/submitted.html')
 
 
 
