@@ -11,7 +11,7 @@ function startTimer(){
 }
 
 function send(){
-    alert('hello')
+    
     var data = $.ajax( {
         type: 'GET',
         url: `/quiz-portal/polysis/hello/`,

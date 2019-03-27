@@ -15,7 +15,7 @@ function memberForm() {
 
 
 function send(){
-    alert('hello')
+    
     var data = $.ajax( {
         type: 'GET',
         url: `/quiz-portal/mechanix/hello/`,
