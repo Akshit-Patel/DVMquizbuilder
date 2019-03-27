@@ -399,6 +399,20 @@ def get_time_remaining(request):
         return JsonResponse(data)
 
 
+@csrf_exempt
+def get_ques_attempted(request):
+    current_member = Member.objects.filter(user = request.user)
+    ques_remaining = MemberQuestion.objects.filter(member = current_member).count()
+    ques_attempted = 10 - ques_remaining
+
+    data = {
+        "ques_attempted":ques_attempted,
+    }
+
+    return JsonResponse(data)
+
+
+
 
 # @staff_member_required
 # def add_question(request):
