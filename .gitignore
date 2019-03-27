@@ -10,4 +10,5 @@ env
 db.sqlite3
 migrations
 DVMquizbuilder/config.py
+populate.py
 

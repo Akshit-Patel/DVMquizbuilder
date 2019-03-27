@@ -26,8 +26,8 @@ function getOverview(){
         success: function(data){
             document.querySelector("#user-name").innerHTML = "Name: " + data.name;
             document.querySelector("#score").innerHTML = "Score: " + data.score;
-            document.querySelector("#line-1").innerHTML = "Attempted: " + (data.correct + data.incorrect);
-            document.querySelector("#line-2").innerHTML = "Unattempted: " + data.unattempted;
+            // document.querySelector("#line-1").innerHTML = "Attempted: " + (data.correct + data.incorrect);
+            // document.querySelector("#line-2").innerHTML = "Unattempted: " + data.unattempted;
             document.querySelector("#line-3").innerHTML = "Correct: " + data.correct;
             document.querySelector("#line-4").innerHTML = "Incorrect: " + data.incorrect;
             document.querySelector("#rank").innerHTML = data.rank;
