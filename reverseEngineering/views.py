@@ -251,8 +251,24 @@ def store_response(request):
         return HttpResponse("Answer stored")
 
 def get_leaderboard(request):
-    current_member = Member.objects.get(user=request.user)
-    if current_member.submitted:
+    try:    
+        current_member = Member.objects.get(user=request.user)
+        if current_member.submitted:
+            leaderboard = Member.objects.order_by('-score')
+            ranklist=[]
+            scorelist = []
+            for member in leaderboard:
+                if member.submitted:
+                    ranklist.append(member.name)
+                    scorelist.append(member.score)
+            data = {
+                "ranklist":ranklist,
+                "scorelist":scorelist
+            }
+            return JsonResponse(data)
+        else:
+            return HttpResponse("IDK what to put here")
+    except:
         leaderboard = Member.objects.order_by('-score')
         ranklist=[]
         scorelist = []
@@ -265,8 +281,7 @@ def get_leaderboard(request):
             "scorelist":scorelist
         }
         return JsonResponse(data)
-    else:
-        return HttpResponse("IDK what to put here")
+    
 
 @login_required(login_url='sign_in/')
 def submit(request):
