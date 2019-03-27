@@ -302,7 +302,7 @@ def submit(request):
 
 
 
-@login_required(login_url='sign_in/')
+# @login_required(login_url='sign_in/')
 def get_result(request):
     current_member = Member.objects.get(user=request.user)
     if current_member.submitted:
