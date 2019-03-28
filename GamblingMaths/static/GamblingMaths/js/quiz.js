@@ -144,7 +144,6 @@ function getCurrentQuestionNo() {
     success: function(data) {
       questionNo = data.ques_attempted;
       getQuestion(questionNo);
-      console.log("run");
     }
   });
 }
@@ -163,6 +162,7 @@ function getQuestion(quesNo) {
     url: `/quiz-portal/gamblingMaths/get_question/${pool}`,
     data: {},
     success: function(data) {
+      console.log(data);
       // console.log(data);
       document.getElementById("save-next").disabled = false;
       ques_key = data.ques_key;
