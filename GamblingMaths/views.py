@@ -21,9 +21,9 @@ app_name='quiz-portal/gamblingMaths'
 def generate_keys():
     key_list = []
     
-    y = random.randint(0,2)
+    y = random.randint(0, 11)
     while True:
-        z = random.randint(0,2)
+        z = random.randint(0,11)
         if z == y:
             continue
         else:

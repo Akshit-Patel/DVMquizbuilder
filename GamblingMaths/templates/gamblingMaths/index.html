@@ -41,14 +41,15 @@
         </div>
 
         <div class="get-marks">
-          <form name="get_marks">
+          <div name="get_marks">
             Enter marks for the Question:
-            <input type="number" name="marks" required>
+            <input type="number" name="marks" id = "ques-marks" required>
             <br>
             <center>
-              <button onclick="sendMarks()" class="marks-button">Submit</button>
+              <!-- <button onclick="sendMarks()" class="marks-button">Submit</button> -->
+              <input type="button" value="Submit" onclick="sendMarks()" class="marks-button">
             </center>
-          </form>
+          </div>
         </div>
 
         <div class="user-footer">

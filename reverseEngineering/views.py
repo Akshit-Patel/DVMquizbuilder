@@ -250,6 +250,7 @@ def store_response(request):
                 a.save() 
         return HttpResponse("Answer stored")
 
+
 def get_leaderboard(request):
     try:    
         current_member = Member.objects.get(user=request.user)
@@ -319,33 +320,45 @@ def submit(request):
 
 # @login_required(login_url='sign_in/')
 def get_result(request):
-    current_member = Member.objects.get(user=request.user)
-    if current_member.submitted:
-        name = current_member.name
-        correct = current_member.answered_correctly.all().count()
-        incorrect = current_member.answered_incorrectly.all().count()
-        unattempted = Question.objects.all().count() - correct - incorrect
-        score = current_member.score
+    try:
+        current_member = Member.objects.get(user=request.user)
+        if current_member.submitted:
+            name = current_member.name
+            correct = current_member.answered_correctly.all().count()
+            incorrect = current_member.answered_incorrectly.all().count()
+            unattempted = Question.objects.all().count() - correct - incorrect
+            score = current_member.score
 
-        leaderboard = Member.objects.filter(submitted = True).order_by('-score')
-        rank = 1
-        for member in leaderboard:
-            if not member == current_member:
-                rank = rank + 1
-            else:
-                break
-        
+            leaderboard = Member.objects.filter(submitted = True).order_by('-score')
+            rank = 1
+            for member in leaderboard:
+                if not member == current_member:
+                    rank = rank + 1
+                else:
+                    break
+            
+            data = {
+                'name':name,
+                'correct':correct,
+                'incorrect':incorrect,
+                'unattempted':unattempted,
+                'rank':rank,
+                'score':score
+            }
+            return JsonResponse(data)
+        else:
+            return HttpResponse("Please attempt all questions.")
+    
+    except:
         data = {
-            'name':name,
-            'correct':correct,
-            'incorrect':incorrect,
-            'unattempted':unattempted,
-            'rank':rank,
-            'score':score
-        }
+                'name':'AnonymousUser',
+                'correct':0,
+                'incorrect':0,
+                'unattempted':0,
+                'rank':0,
+                'score':0
+            }
         return JsonResponse(data)
-    else:
-        return HttpResponse("You think you're smart?")
 
 
 
