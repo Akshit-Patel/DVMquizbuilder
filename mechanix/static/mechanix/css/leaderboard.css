@@ -122,12 +122,19 @@ h1 {
     margin: 0;
 }
 
+
+.table-wrapper {
+    display: none;
+    overflow-y: scroll;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+}
 .display-leaderboard {
     width: 99.5%;
     border: 2px solid grey;
     border-collapse: collapse;
     margin-left: 3px;
-    display: none;
 }
 tr, td {
     padding: 0;
