@@ -203,7 +203,7 @@ def store_response(request):
             a = Response(member=current_member, question=question, answer_text=answer)
             a.save()
             change = (uncertainty * score)/100
-            if answer == current_question.answer.lower():
+            if answer == question.answer.lower():
                 if change%1:
                     change=int(change)+1
                 current_member.score += change
