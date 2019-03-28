@@ -164,6 +164,7 @@ function getQuestion(quesNo) {
     data: {},
     success: function(data) {
       // console.log(data);
+      document.getElementById("save-next").disabled = false;
       ques_key = data.ques_key;
       console.log(ques_key);
       if (data.mcq_flag) {
@@ -237,6 +238,7 @@ window.addEventListener("keypress", function(e) {
 
 
 function sendAnswer(quesNo, key, poolNo) {
+  document.getElementById("save-next").disabled = true;
   if (is_mcq) {
     var data = $.ajax({
       type: "POST",
@@ -291,6 +293,8 @@ function SaveAndNext() {
   }
   else {
     var post_key = form[0].value;
+    if(post_key)
+    attemptCheck = true;
   }
   return post_key;
 }
