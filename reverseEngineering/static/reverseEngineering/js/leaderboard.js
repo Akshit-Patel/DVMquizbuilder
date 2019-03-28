@@ -1,13 +1,13 @@
 getOverview();
 document.querySelector(".overview").addEventListener("click", () => {
     document.querySelector(".display-overview").style.display = "block";
-    document.querySelector(".display-leaderboard").style.display = "none";
+    document.querySelector(".table-wrapper").style.display = "none";
 })
 
 var counter = 0;
 document.querySelector(".leaderboard").addEventListener("click", () => {
     document.querySelector(".display-overview").style.display = "none";
-    document.querySelector(".display-leaderboard").style.display = "table";
+    document.querySelector(".table-wrapper").style.display = "flex";
     if(counter == 0) {
         getLeaderboard();
         counter++;
