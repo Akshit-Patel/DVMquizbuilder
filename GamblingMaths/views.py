@@ -349,7 +349,9 @@ def get_question(request, pool):
         data = {
             "question":current_question.content,
             "mcq_flag":False,
-            # "entered_answer":entered_answer
+            "ques_key":current_question.questionkey,
+            "image_flag": current_question.is_image,
+            "image_url":image_url
         }
         return JsonResponse(data)
 

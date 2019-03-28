@@ -208,6 +208,13 @@ function getQuestion(quesNo) {
         var question_view = document.querySelectorAll(
           ".questionsView .question-text"
         )[0];
+        if (data.image_url != 0) {
+          var quesImg = document.createElement("img");
+          quesImg.setAttribute("src", data.image_url);
+          quesImg.className = "quesImg";
+          question_view.appendChild(quesImg);
+          question_view.innerHTML += "<br><br>";
+        }
         question_view.innerHTML = `${data.question}`;
         var radioButton = document.createElement("input");
         radioButton.setAttribute("type", "text");
