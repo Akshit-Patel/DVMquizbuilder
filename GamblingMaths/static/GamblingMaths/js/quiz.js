@@ -97,7 +97,7 @@ function setTimer(maxtime_min, secondsLeft) {
     if (secondsLeft < 10) timer.innerHTML = `${minutesLeft} : 0${secondsLeft}`;
     else timer.innerHTML = `${minutesLeft} : ${secondsLeft}`;
 
-    if (minutesLeft < 0 || minutesLeft > 100) {
+    if (minutesLeft < 0 || minutesLeft > 10) {
       timeout();
     }
   }, 1000);
@@ -173,11 +173,14 @@ function getQuestion(quesNo) {
         var question_view = document.querySelectorAll(
           ".questionsView .question-text"
         )[0];
-        if (data.image_url != 0) {
+        if (data.image_flag) {
           var quesImg = document.createElement("img");
+          var imgContainer = document.createElement("div");
+          imgContainer.className = "imgContainer";
           quesImg.setAttribute("src", data.image_url);
           quesImg.className = "quesImg";
-          question_view.appendChild(quesImg);
+          imgContainer.appendChild(quesImg);
+          question_view.appendChild(imgContainer);
           question_view.innerHTML += "<br><br>";
         }
         question_view.innerHTML += `${data.question}`;
@@ -208,11 +211,14 @@ function getQuestion(quesNo) {
         var question_view = document.querySelectorAll(
           ".questionsView .question-text"
         )[0];
-        if (data.image_url != 0) {
+        if (data.image_flag) {
           var quesImg = document.createElement("img");
+          var imgContainer = document.createElement("div");
+          imgContainer.className = "imgContainer";
           quesImg.setAttribute("src", data.image_url);
           quesImg.className = "quesImg";
-          question_view.appendChild(quesImg);
+          imgContainer.appendChild(quesImg);
+          question_view.appendChild(imgContainer);
           question_view.innerHTML += "<br><br>";
         }
         question_view.innerHTML = `${data.question}`;

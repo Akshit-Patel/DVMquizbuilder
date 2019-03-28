@@ -376,11 +376,11 @@ def get_time_remaining(request):
 
     else:
         start_time = current_member.start_time
-        quiz_time = datetime.timedelta(minutes = 100)
+        quiz_time = datetime.timedelta(minutes = 10)
         end_time = start_time + quiz_time
         time_remaining = end_time - datetime.datetime.now(timezone.utc) # A datetime.timedelta object
         
-        if time_remaining.seconds > 6000 or time_remaining.seconds < 0:
+        if time_remaining.seconds > 600 or time_remaining.seconds < 0:
             
             data = {
                 "message": "Time is out of range"
