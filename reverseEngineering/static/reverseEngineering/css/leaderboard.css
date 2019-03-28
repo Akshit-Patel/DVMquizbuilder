@@ -127,7 +127,7 @@ h1 {
     border: 2px solid grey;
     border-collapse: collapse;
     margin-left: 3px;
-    display: none;
+    /* display: none; */
 }
 tr, td {
     padding: 0;
