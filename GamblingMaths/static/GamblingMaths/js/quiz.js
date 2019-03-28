@@ -610,7 +610,7 @@ function askMarks() {
 }
 
 function sendMarks() {
-  var marks = document.get_marks.marks.value;
+  var marks = document.getElementById("ques-marks").value;
   if (marks >= 10 && marks <= 90) {
     var data = $.ajax({
       type: "POST",
