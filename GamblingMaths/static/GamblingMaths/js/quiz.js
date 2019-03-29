@@ -167,22 +167,29 @@ function getQuestion(quesNo) {
       document.getElementById("save-next").disabled = false;
       ques_key = data.ques_key;
       console.log(ques_key);
+      console.log(data.image_flag);
+
+      if (data.image_flag) {
+        var obj = JSON.parse;
+        var question_view = document.querySelectorAll(
+          ".questionsView .question-text"
+        )[0];
+        var quesImg = document.createElement("img");
+        var imgContainer = document.createElement("div");
+        imgContainer.className = "imgContainer";
+        quesImg.setAttribute("src", data.image_url);
+        quesImg.className = "quesImg";
+        imgContainer.appendChild(quesImg);
+        question_view.appendChild(imgContainer);
+        question_view.innerHTML += "<br><br>";
+      }
+
       if (data.mcq_flag) {
         is_mcq = true;
         var obj = JSON.parse;
         var question_view = document.querySelectorAll(
           ".questionsView .question-text"
         )[0];
-        if (data.image_flag) {
-          var quesImg = document.createElement("img");
-          var imgContainer = document.createElement("div");
-          imgContainer.className = "imgContainer";
-          quesImg.setAttribute("src", data.image_url);
-          quesImg.className = "quesImg";
-          imgContainer.appendChild(quesImg);
-          question_view.appendChild(imgContainer);
-          question_view.innerHTML += "<br><br>";
-        }
         question_view.innerHTML += `${data.question}`;
         var no_of_options = data.answers.length;
         var form = document.querySelectorAll(
@@ -202,7 +209,8 @@ function getQuestion(quesNo) {
           radioHolder.innerHTML += `${data.answers[i]}`;
           form.appendChild(radioHolder);
         }
-      } else {
+      } 
+      else {
         is_mcq = false;
         var obj = JSON.parse;
         var form = document.querySelectorAll(
@@ -211,17 +219,7 @@ function getQuestion(quesNo) {
         var question_view = document.querySelectorAll(
           ".questionsView .question-text"
         )[0];
-        if (data.image_flag) {
-          var quesImg = document.createElement("img");
-          var imgContainer = document.createElement("div");
-          imgContainer.className = "imgContainer";
-          quesImg.setAttribute("src", data.image_url);
-          quesImg.className = "quesImg";
-          imgContainer.appendChild(quesImg);
-          question_view.appendChild(imgContainer);
-          question_view.innerHTML += "<br><br>";
-        }
-        question_view.innerHTML = `${data.question}`;
+        question_view.innerHTML += `${data.question}`;
         var radioButton = document.createElement("input");
         radioButton.setAttribute("type", "text");
         radioButton.setAttribute("name", "answer");
