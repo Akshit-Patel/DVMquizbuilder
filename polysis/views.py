@@ -16,7 +16,7 @@ import re
 import datetime
 
 app_name='quiz-portal/polysis'
-settings.LOGIN_REDIRECT_URL = '/quiz-portal/polysis/memcreate'
+# settings.LOGIN_REDIRECT_URL = '/quiz-portal/polysis/memcreate'
 
 
 def leaderboard(request):
@@ -34,7 +34,7 @@ def index(request):
         return render(request, 'polysis/index.html')
 
 def sign_in(request):
-    settings.LOGIN_REDIRECT_URL = '/quiz-portal/polysis/memcreate'
+    # settings.LOGIN_REDIRECT_URL = '/quiz-portal/polysis/memcreate'
     if request.user.is_anonymous:
         return render(request, 'polysis/sign_in.html', {'url':'/quiz-portal/polysis/memcreate'})
     else:
@@ -533,5 +533,5 @@ def add_question(request):
     #                 answer = response.answer_text
 
 def hello(request):
-    settings.LOGIN_REDIRECT_URL = request.GET['url']
+    # settings.LOGIN_REDIRECT_URL = request.GET['url']
     return HttpResponse('hello')

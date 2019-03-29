@@ -16,7 +16,7 @@ import re
 import datetime
 
 app_name='quiz-portal/reverseEngineering'
-settings.LOGIN_REDIRECT_URL = '/quiz-portal/reverseEngineering/memcreate'
+# settings.LOGIN_REDIRECT_URL = '/quiz-portal/reverseEngineering/memcreate'
 
 
 def leaderboard(request):
@@ -34,7 +34,7 @@ def index(request):
         return render(request, 'reverseEngineering/index.html')
 
 def sign_in(request):
-    settings.LOGIN_REDIRECT_URL = '/quiz-portal/reverseEngineering/memcreate'
+    # settings.LOGIN_REDIRECT_URL = '/quiz-portal/reverseEngineering/memcreate'
     if request.user.is_anonymous:
         return render(request, 'reverseEngineering/sign_in.html')
     else:
@@ -562,5 +562,5 @@ def add_question(request):
 
 
 def hello(request):
-    settings.LOGIN_REDIRECT_URL = request.GET['url']
+    # settings.LOGIN_REDIRECT_URL = request.GET['url']
     return HttpResponse('hello')
