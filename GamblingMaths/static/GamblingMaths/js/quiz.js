@@ -638,5 +638,5 @@ function sendMarks() {
     quesArea.style.display = "block";
     marksEnqArea.style.display = "none";
     buttonArea.style.display = "flex";
-  } else alert("Inavlid input! Please Eneter a number between 10 to 90");
+  } else alert("Invalid input! Please Eneter a number between 10 to 90");
 }
