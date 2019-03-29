@@ -10,3 +10,16 @@ function startTimer(){
         }
     });
 }
+
+function send(){
+    
+    var data = $.ajax( {
+        type: 'GET',
+        url: `/quiz-portal/gamblingMaths/hello/`,
+        data: { 'url':'/quiz-portal/gamblingMaths/memcreate'
+        },
+        success: function(data) {  
+        }
+    
+    });
+}

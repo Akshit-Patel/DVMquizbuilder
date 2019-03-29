@@ -29,4 +29,6 @@ urlpatterns = [
     path('set_uncertainty/', views.set_uncertainty, name="set_uncertainty"),
     path('generate_questions/', views.generate_questions, name='generate_questions'),
     path('get_ques_attempted/', views.get_ques_attempted, name='get_ques_attempted'),
+    path('hello/',views.hello, name="hello")
+
 ]

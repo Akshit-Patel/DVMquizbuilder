@@ -672,3 +672,14 @@ def get_ques_attempted(request):
 #             return HttpResponse(status=200)
 #         except:
 #             return HttpResponse(status=500)
+
+
+def hello(request):
+    '''
+    Very poor code. 
+    NOT RECOMMENDED 
+    EVER
+    '''
+    print('hello')
+    settings.LOGIN_REDIRECT_URL = request.GET['url']
+    return HttpResponse('hello')
