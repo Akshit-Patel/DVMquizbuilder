@@ -162,12 +162,10 @@ function getQuestion(quesNo) {
     url: `/quiz-portal/gamblingMaths/get_question/${pool}`,
     data: {},
     success: function(data) {
-      console.log(data);
       // console.log(data);
       document.getElementById("save-next").disabled = false;
       ques_key = data.ques_key;
       console.log(ques_key);
-      console.log(data.image_flag);
 
       if (data.image_flag) {
         var obj = JSON.parse;
@@ -260,7 +258,6 @@ function sendAnswer(quesNo, key, poolNo) {
         "pool" : poolNo
       },
       success: function(data) {
-        console.log("Response: ", data);
         doNext();
         getQuestion(questionNo);
       }
@@ -275,7 +272,6 @@ function sendAnswer(quesNo, key, poolNo) {
         "pool": poolNo
       },
       success: function(data) {
-        console.log("Response: ", data);
         doNext();
         getQuestion(questionNo);
       }
