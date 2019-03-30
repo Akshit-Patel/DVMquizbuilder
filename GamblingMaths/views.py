@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 import os
+import json
 import re
 import datetime
 import random
@@ -46,6 +47,7 @@ def index(request):
         return render(request, 'gamblingMaths/index.html')
 
 def sign_in(request):
+    return JsonResponse( {'Message': 'The quiz is over.'},safe=False)
     settings.LOGIN_REDIRECT_URL = '/quiz-portal/gamblingMaths/memcreate'
     if request.user.is_anonymous:
         return render(request, 'gamblingMaths/sign_in.html')
